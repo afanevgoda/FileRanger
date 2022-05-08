@@ -230,3 +230,10 @@ _Pvt_Extensions
 
 # FAKE - F# Make
 .fake/
+/.idea/.idea.FileRanger/.idea/encodings.xml
+/.idea/.idea.FileRanger.dir/.idea/encodings.xml
+/.idea/.idea.FileRanger.dir/.idea/indexLayout.xml
+/.idea/.idea.FileRanger.dir/.idea/projectSettingsUpdater.xml
+/.idea/.idea.FileRanger.dir/.idea/vcs.xml
+/.idea/.idea.FileRanger/.idea/workspace.xml
+/.idea/.idea.FileRanger.dir/.idea/workspace.xml
