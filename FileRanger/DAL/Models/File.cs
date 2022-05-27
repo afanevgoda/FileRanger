@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace FileRanger.DAL.Models;
+namespace DAL.Models;
 
 public class File{
     [Key]
@@ -13,4 +13,7 @@ public class File{
     [Column("fullPath")] public string FullPath { get; set; }
     [Column("parentPath")] public string ParentPath { get; set; }
     [Column("extension")] public string Extension { get; set; }
+    [Column("snapshotId")] public int SnapshotId { get; set; }
+    
+    public Snapshot Snapshot { get; set; }
 }

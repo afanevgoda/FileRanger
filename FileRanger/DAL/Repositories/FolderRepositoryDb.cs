@@ -1,8 +1,7 @@
-﻿using FileRanger.DAL.DB;
-using FileRanger.DAL.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using DAL.DB;
+using DAL.Models;
 
-namespace FileRanger.DAL.Repositories;
+namespace DAL.Repositories;
 
 public class FolderRepositoryDb : BaseRepositoryDb<Folder> {
     

@@ -1,0 +1,8 @@
+.folder {
+    text-align: center;
+    cursor: pointer;
+}
+
+.folder:hover {
+    background: aliceblue;
+}

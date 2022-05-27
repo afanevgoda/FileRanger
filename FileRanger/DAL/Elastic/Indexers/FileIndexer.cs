@@ -1,13 +1,9 @@
-﻿using FileRanger.DAL.Models;
-using Nest;
-using File = FileRanger.DAL.Models.File;
+﻿using Nest;
 
-namespace FileRanger.DAL.Elastic.Indexers;
+namespace DAL.Elastic.Indexers;
 
-public class FileIndexer : BaseIndexer<File>{
-    private readonly ConnectionSettings _connectionSettings;
-    private string _indexName = "file";
-
+public class FileIndexer : BaseIndexer<Models.File>{
     public FileIndexer(ConnectionSettings settings) : base(settings) {
+        IndexName = "file";
     }
 }

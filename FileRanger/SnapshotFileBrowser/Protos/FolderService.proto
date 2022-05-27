@@ -1,0 +1,81 @@
+﻿syntax = "proto3";
+//FolderService
+service FolderService {
+  rpc SaveFolders (ListOfFolders) returns (Response);
+  rpc GetFolders (GetFolderForSnapshot) returns (ListOfFolders);
+}
+
+message Response {
+  string Result = 1;
+}
+
+message ListOfFolders {
+  repeated Folder folder = 1;
+}
+
+message Folder {
+  int32 Id = 1;
+  string Name = 2;
+  string FullPath = 3;
+  string ParentPath = 4;
+  int32 SnapshotId = 5;
+}
+
+message GetFolderForSnapshot {
+  string TargetPath = 1;
+  int32 SnapshotId = 2;
+}
+//SnapshotService
+service SnapshotService{
+  rpc AddNewSnapshot (NewSnapshot) returns (CreatedSnapshot);
+  rpc GetSnapshots (GetSnapshotMessage) returns (ListOfSnapshots);
+}
+
+message NewSnapshot{
+  string CreatedAt = 1;
+  string HostName = 2;
+  string Drive = 3;
+}
+
+message CreatedSnapshot{
+  int32 SnapshotId = 1;
+}
+
+message ListOfSnapshots{
+  repeated SnapshotMessage snapshots = 1;
+}
+
+message SnapshotMessage {
+  int32 Id = 1;
+  string Hostname = 2;
+  string Drive = 3;
+  string CreatedAt = 4;
+}
+
+message GetSnapshotMessage {
+  string TargetHostName = 1;
+  string TargetDrive = 2;
+}
+//FileService
+service FileService {
+  rpc SaveFiles (ListOfFiles) returns (Response);
+  rpc GetFiles (GetFilesForSnapshot) returns (ListOfFiles);
+}
+
+message File {
+  int32 Id = 1;
+  string Name = 2;
+  string FullPath = 3;
+  string ParentPath = 4;
+  string Extension = 5;
+  int32 SnapshotId = 6;
+}
+
+message ListOfFiles{
+  repeated File files = 1;
+}
+
+message GetFilesForSnapshot{
+  string TargetPath = 1;
+  int32 SnapshotId = 2;
+}

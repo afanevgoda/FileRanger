@@ -1,4 +1,7 @@
-﻿namespace FileRanger.DAL.Repositories;
+﻿using System;
+using System.Collections.Generic;
+
+namespace DAL.Repositories;
 
 public interface IRepository<T>{
     void Add(T newEntity);

@@ -1,9 +1,8 @@
-﻿using FileRanger.DAL.DB;
-using File = FileRanger.DAL.Models.File;
+﻿using DAL.DB;
 
-namespace FileRanger.DAL.Repositories;
+namespace DAL.Repositories;
 
-public class FileRepositoryDb : BaseRepositoryDb<File>{
+public class FileRepositoryDb : BaseRepositoryDb<Models.File>{
     public FileRepositoryDb(AppDbContext dbContext) : base(dbContext, dbContext.Files) {
     }
 }

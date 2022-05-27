@@ -1,4 +1,6 @@
-﻿namespace FileRanger.DAL.Elastic.Indexers;
+﻿using System.Collections.Generic;
+
+namespace DAL.Elastic.Indexers;
 
 public interface IIndexer<IModel>{
     public List<IModel> GetAll();

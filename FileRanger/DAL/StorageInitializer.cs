@@ -1,12 +1,15 @@
-﻿using FileRanger.DAL.DB;
-using FileRanger.DAL.Elastic.Indexers;
-using FileRanger.DAL.Models;
-using FileRanger.DAL.Repositories;
+﻿using System;
+using DAL.DB;
+using DAL.Elastic.Indexers;
+using DAL.Models;
+using DAL.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Nest;
-using File = FileRanger.DAL.Models.File;
+using File = DAL.Models.File;
 
-namespace FileRanger.DAL;
+namespace DAL;
 
 public class StorageInitializer{
     private IConfigurationRoot _configuration;
@@ -100,12 +103,12 @@ public class StorageInitializer{
     }
 
     private void AddDbRepositories(IServiceCollection serviceCollection) {
-        serviceCollection.AddScoped<Repositories.IRepository<File>, FileRepositoryDb>();
-        serviceCollection.AddScoped<Repositories.IRepository<Folder>, FolderRepositoryDb>();
+        serviceCollection.AddScoped<global::DAL.Repositories.IRepository<File>, FileRepositoryDb>();
+        serviceCollection.AddScoped<global::DAL.Repositories.IRepository<Folder>, FolderRepositoryDb>();
     }
 
     private void AddEsRepositoriesAndIndexers(IServiceCollection serviceCollection) {
-        serviceCollection.AddScoped<Repositories.IRepository<File>, FileRepositoryEs>();
+        serviceCollection.AddScoped<global::DAL.Repositories.IRepository<File>, FileRepositoryEs>();
         serviceCollection.AddScoped<IIndexer<File>, FileIndexer>();
     }
 }

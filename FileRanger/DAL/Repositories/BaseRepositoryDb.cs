@@ -1,7 +1,10 @@
-﻿using FileRanger.DAL.DB;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using DAL.DB;
 using Microsoft.EntityFrameworkCore;
 
-namespace FileRanger.DAL.Repositories;
+namespace DAL.Repositories;
 
 public class BaseRepositoryDb<T> : IRepository<T> where T : class{
     private readonly AppDbContext _dbContext;

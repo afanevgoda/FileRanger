@@ -1,9 +1,11 @@
-﻿using FileRanger.DAL.Elastic.Indexers;
-using File = FileRanger.DAL.Models.File;
+﻿using System;
+using System.Collections.Generic;
+using DAL.Elastic.Indexers;
+using File = DAL.Models.File;
 
-namespace FileRanger.DAL.Repositories;
+namespace DAL.Repositories;
 
-public class FileRepositoryEs : IRepository<File>{
+public class FileRepositoryEs : IRepository<Models.File>{
     private IIndexer<File> _fileIndexer;
     
     public FileRepositoryEs(IIndexer<File> fileIndexer) {

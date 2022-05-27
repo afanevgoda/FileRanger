@@ -1,14 +1,15 @@
-﻿using FileRanger.DAL.Models;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Nest;
 
-namespace FileRanger.DAL.Elastic.Indexers;
+namespace DAL.Elastic.Indexers;
 
 public class BaseIndexer<T> : IIndexer<T> where T : class{
-    protected string _indexName;
-    protected readonly ConnectionSettings _connectionSettings;
+    protected string IndexName = null!;
+    private readonly ConnectionSettings _connectionSettings;
     
-    public BaseIndexer(ConnectionSettings settings) {
-        _connectionSettings = settings.DefaultIndex(_indexName);
+    protected BaseIndexer(ConnectionSettings settings) {
+        _connectionSettings = settings.DefaultIndex(IndexName);
     }
 
     public virtual List<T> GetAll() {

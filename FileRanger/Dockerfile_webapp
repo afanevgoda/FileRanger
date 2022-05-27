@@ -1,0 +1,15 @@
+﻿FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /source/webapp
+
+COPY ./WebApp/WebApp.csproj ./
+RUN dotnet restore WebApp.csproj
+COPY ./WebApp ./
+
+COPY ./DAL/ ./DAL/
+RUN dotnet publish WebApp.csproj -c Release -o out
+
+FROM mcr.microsoft.com/dotnet/aspnet:6.0
+WORKDIR /source/webapp
+COPY --from=build /source/webapp/out .
+RUN ls
+ENTRYPOINT ["dotnet", "WebApp.dll"]
