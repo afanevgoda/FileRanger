@@ -1,0 +1,27 @@
+﻿syntax = "proto3";
+//FolderService
+service FolderService {
+  rpc SaveFolders (ListOfFolders) returns (Response);
+  rpc GetFolders (GetFolderForSnapshot) returns (ListOfFolders);
+}
+
+message Response {
+  string Result = 1;
+}
+
+message ListOfFolders {
+  repeated Folder folder = 1;
+}
+
+message Folder {
+  int32 Id = 1;
+  string Name = 2;
+  string FullPath = 3;
+  string ParentPath = 4;
+  int32 SnapshotId = 5;
+}
+
+message GetFolderForSnapshot {
+  string TargetPath = 1;
+  int32 SnapshotId = 2;
+}

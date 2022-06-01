@@ -1,0 +1,25 @@
+﻿syntax = "proto3";
+import "FolderService.proto";
+
+service FileService {
+  rpc SaveFiles (ListOfFiles) returns (Response);
+  rpc GetFiles (GetFilesForSnapshot) returns (ListOfFiles);
+}
+
+message File {
+  int32 Id = 1;
+  string Name = 2;
+  string FullPath = 3;
+  string ParentPath = 4;
+  string Extension = 5;
+  string SnapshotId = 6;
+}
+
+message ListOfFiles{
+  repeated File files = 1;
+}
+
+message GetFilesForSnapshot{
+  string TargetPath = 1;
+  int32 SnapshotId = 2;
+}

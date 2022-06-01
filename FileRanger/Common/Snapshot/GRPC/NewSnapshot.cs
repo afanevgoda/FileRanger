@@ -1,4 +1,4 @@
-﻿namespace DtoLibrary.Snapshot.GRPC;
+﻿namespace Common.Snapshot.GRPC;
 
 public class AddNewSnapshot{
     public string CreatedAt { get; set; }

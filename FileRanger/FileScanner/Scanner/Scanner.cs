@@ -1,11 +1,12 @@
-﻿using DtoLibrary.Snapshot.GRPC;
+﻿using System.Collections.Concurrent;
+using Common.Snapshot;
+using Common.Snapshot.GRPC;
 using FileScanner.WebAppCommunication;
-using File = DtoLibrary.Snapshot.GRPC.File;
+using File = Common.Snapshot.GRPC.File;
 
 namespace FileScanner.Scanner;
 
 public class Scanner : IScanner{
-    private IServiceProvider _serviceProvider;
     private ILogger<Scanner> _logger;
     private readonly IDataSender _dataSender;
     private readonly ISnapshotInitializer _snapshotInitializer;
@@ -14,8 +15,8 @@ public class Scanner : IScanner{
     private List<Folder> _foldersToAdd = new();
     private List<File> _filesToAdd = new();
 
-    public Scanner(IServiceProvider serviceProvider, ILogger<Scanner> logger, IDataSender dataSender, ISnapshotInitializer snapshotInitializer) {
-        _serviceProvider = serviceProvider;
+    public Scanner(ILogger<Scanner> logger, IDataSender dataSender,
+        ISnapshotInitializer snapshotInitializer) {
         _logger = logger;
         _dataSender = dataSender;
         _snapshotInitializer = snapshotInitializer;
@@ -25,7 +26,9 @@ public class Scanner : IScanner{
         try {
             _snapshotId = await _snapshotInitializer.CreateSnapshot(targetDrive);
             await ScanDirectory($"{targetDrive}:\\");
-            AddBatchIntoStorage(true);
+            AddFoldersIntoStorage(true);
+            AddFilesIntoStorage(true);
+            await _dataSender.SendSnapshotResult(_snapshotId, SnapshotStatus.Success);
             _logger.LogInformation($"Scanning disk {targetDrive} is finished");
         }
         catch (Exception ex) {
@@ -44,10 +47,10 @@ public class Scanner : IScanner{
                     SnapshotId = _snapshotId
                 });
                 await ScanDirectory(subDirectory.FullName);
+                AddFoldersIntoStorage();
             }
 
             ScanFiles(directory);
-            AddBatchIntoStorage();
         }
         catch (UnauthorizedAccessException) {
             _logger.LogError($"Could not access {targetDirectory}");
@@ -69,21 +72,25 @@ public class Scanner : IScanner{
                 SnapshotId = _snapshotId
             });
         }
+
+        AddFilesIntoStorage();
     }
 
-    private readonly object _folderLock = new();
-    private readonly object _fileLock = new();
+    private object filesLock = new ();
+    private object foldersLock = new ();
 
-    private void AddBatchIntoStorage(bool addAnyway = false) {
+    private async void AddFoldersIntoStorage(bool addAnyway = false) {
         if (_foldersToAdd.Count >= 1000 || addAnyway) {
-            lock (_folderLock) {
+            lock (foldersLock) {
                 _dataSender.SendFolderData(_foldersToAdd);
                 _foldersToAdd.Clear();
             }
         }
+    }
 
+    private async void AddFilesIntoStorage(bool addAnyway = false) {
         if (_filesToAdd.Count >= 1000 || addAnyway) {
-            lock (_fileLock) {
+            lock (filesLock) {
                 _dataSender.SendFilesData(_filesToAdd);
                 _filesToAdd.Clear();
             }

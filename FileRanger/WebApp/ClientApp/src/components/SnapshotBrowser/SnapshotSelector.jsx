@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import { Divider, Radio } from 'antd';
+import { FastBackwardOutlined } from '@ant-design/icons';
+import { defaultFormat } from '../../helpers/dateHelper';
+import styles from '../../components/SnapshotBrowser/SnapshotSelector.module.css';
 
 export default function SnapshotSelector({ snapshots, setSelectedSnapshot }) {
     const onChange = ({ target: { value } }) => setSelectedSnapshot(value);
@@ -11,7 +14,14 @@ export default function SnapshotSelector({ snapshots, setSelectedSnapshot }) {
         comp = <>
             <Radio.Group onChange={onChange}>
                 {snapshots.map(x => (
-                    <Radio.Button value={x}>{x.createdAt}</Radio.Button>
+                    <Radio.Button
+                        icon={<FastBackwardOutlined />}
+                        className={styles.snapshotButton}
+                        value={x}>
+                        <span>
+                            {defaultFormat(x.createdAt)}
+                        </span>
+                    </Radio.Button>
                 ))}
             </Radio.Group>
         </>

@@ -1,4 +1,4 @@
-﻿namespace DtoLibrary.Snapshot.GRPC;
+﻿namespace Common.Snapshot.GRPC;
 
 public class File{
     public int Id {get;set;}

@@ -1,131 +1,124 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
-    <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
-    <IsPackable>false</IsPackable>
-    <SpaRoot>ClientApp\</SpaRoot>
-    <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
-    <SpaProxyServerUrl>http://localhost:44495</SpaProxyServerUrl>
-    <SpaProxyLaunchCommand>npm start</SpaProxyLaunchCommand>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
+        <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
+        <IsPackable>false</IsPackable>
+        <SpaRoot>ClientApp\</SpaRoot>
+        <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
+        <SpaProxyServerUrl>http://localhost:44495</SpaProxyServerUrl>
+        <SpaProxyLaunchCommand>npm start</SpaProxyLaunchCommand>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Google.Protobuf" Version="3.20.1" />
-    <PackageReference Include="Grpc.Core.Api" Version="2.46.3" />
-    <PackageReference Include="Grpc.Net.Client" Version="2.46.0" />
-    <PackageReference Include="Grpc.Tools" Version="2.46.3">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="6.0.5" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.5" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.5" />
-    <PackageReference Include="NEST" Version="7.17.1" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.4" />
-    <PackageReference Include="RabbitMQ.Client" Version="6.3.0" />
-    <ProjectReference Include="../DtoLibrary/DtoLibrary.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <!-- Don't publish the SPA source files, but do show them in the project files list -->
-    <Content Remove="$(SpaRoot)**" />
-    <Content Include="obj\Debug\net6.0\12fbc7ffe642ca7e_FolderService.protodep" />
-    <Content Include="obj\Debug\net6.0\12fbc7ffe642ca7e_test.protodep" />
-    <Content Include="obj\Debug\net6.0\apphost.exe" />
-    <Content Include="obj\Debug\net6.0\refint\WebApp.dll" />
-    <Content Include="obj\Debug\net6.0\ref\WebApp.dll" />
-    <Content Include="obj\Debug\net6.0\spa.proxy.json" />
-    <Content Include="obj\Debug\net6.0\staticwebassets.build.json" />
-    <Content Include="obj\Debug\net6.0\WebApp.assets.cache" />
-    <Content Include="obj\Debug\net6.0\WebApp.csproj.AssemblyReference.cache" />
-    <Content Include="obj\Debug\net6.0\WebApp.csproj.CopyComplete" />
-    <Content Include="obj\Debug\net6.0\WebApp.csproj.CoreCompileInputs.cache" />
-    <Content Include="obj\Debug\net6.0\WebApp.csproj.FileListAbsolute.txt" />
-    <Content Include="obj\Debug\net6.0\WebApp.dll" />
-    <Content Include="obj\Debug\net6.0\WebApp.GeneratedMSBuildEditorConfig.editorconfig" />
-    <Content Include="obj\Debug\net6.0\WebApp.genruntimeconfig.cache" />
-    <Content Include="obj\Debug\net6.0\WebApp.MvcApplicationPartsAssemblyInfo.cache" />
-    <Content Include="obj\Debug\net6.0\WebApp.pdb" />
-    <Content Include="obj\Debug\net6.0\WebApp.RazorAssemblyInfo.cache" />
-    <Content Include="obj\project.assets.json" />
-    <Content Include="obj\project.nuget.cache" />
-    <Content Include="obj\project.packagespec.json" />
-    <Content Include="obj\rider.project.restore.info" />
-    <Content Include="obj\staticwebassets.pack.sentinel" />
-    <Content Include="obj\WebApp.csproj.nuget.dgspec.json" />
-    <Content Include="obj\WebApp.csproj.nuget.g.props" />
-    <Content Include="obj\WebApp.csproj.nuget.g.targets" />
-    <None Remove="$(SpaRoot)**" />
-    <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controllers\" />
-    <Folder Include="obj\Debug\net6.0\staticwebassets" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <_ContentIncludedByDefault Remove="DAL\bin\Debug\net6.0\DAL.deps.json" />
-    <_ContentIncludedByDefault Remove="DAL\obj\project.assets.json" />
-    <_ContentIncludedByDefault Remove="Worker\bin\Debug\net6.0\Worker.deps.json" />
-    <_ContentIncludedByDefault Remove="Worker\bin\Debug\net6.0\Worker.runtimeconfig.json" />
-    <_ContentIncludedByDefault Remove="Worker\obj\project.assets.json" />
-    <_ContentIncludedByDefault Remove="Worker\obj\project.packagespec.json" />
-    <_ContentIncludedByDefault Remove="Worker\obj\Worker.csproj.nuget.dgspec.json" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <ProjectReference Include="..\DAL\DAL.csproj" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <Protobuf Include="Protos\FolderService.proto">
-      <GrpcServices>Client</GrpcServices>
-      <Access>Public</Access>
-      <ProtoCompile>True</ProtoCompile>
-      <CompileOutputs>True</CompileOutputs>
-      <OutputDir>obj\Debug\net6.0\</OutputDir>
-      <Generator>MSBuild:Compile</Generator>
-    </Protobuf>
-  </ItemGroup>
-  
-  <ItemGroup>
-    <Compile Include="obj\Debug\net6.0\.NETCoreApp,Version=v6.0.AssemblyAttributes.cs" />
-    <Compile Include="obj\Debug\net6.0\Protos\FolderService.cs" />
-    <Compile Include="obj\Debug\net6.0\Protos\FolderServiceGrpc.cs" />
-    <Compile Include="obj\Debug\net6.0\WebApp.GlobalUsings.g.cs" />
-    <Compile Include="obj\Debug\net6.0\WebApp.RazorAssemblyInfo.cs" />
-  </ItemGroup>
-
-  <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
-    <!-- Ensure Node.js is installed -->
-    <Exec Command="node --version" ContinueOnError="true">
-      <Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
-    </Exec>
-    <Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build and run this project. To continue, please install Node.js from https://nodejs.org/, and then restart your command prompt or IDE." />
-    <Message Importance="high" Text="Restoring dependencies using 'npm'. This may take several minutes..." />
-    <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
-  </Target>
-
-  <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
-    <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
-    <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
-    <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build" />
-
-    <!-- Include the newly-built files in the publish output -->
     <ItemGroup>
-      <DistFiles Include="$(SpaRoot)build\**" />
-      <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
-        <RelativePath>wwwroot\%(RecursiveDir)%(FileName)%(Extension)</RelativePath>
-        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      </ResolvedFileToPublish>
+        <Protobuf Include="../Protos/*.proto" GrpcServices="Client" />
     </ItemGroup>
-  </Target>
+    
+    <ItemGroup>
+        <PackageReference Include="AutoMapper" Version="11.0.1" />
+        <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+        <PackageReference Include="Google.Protobuf" Version="3.20.1" />
+        <PackageReference Include="Grpc.Core.Api" Version="2.46.3" />
+        <PackageReference Include="Grpc.Net.Client" Version="2.46.0" />
+        <PackageReference Include="Grpc.Tools" Version="2.46.3">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="6.0.5" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.5" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.5" />
+        <PackageReference Include="NEST" Version="7.17.1" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.4" />
+        <PackageReference Include="RabbitMQ.Client" Version="6.3.0" />
+        <ProjectReference Include="..\Common\Common.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <!-- Don't publish the SPA source files, but do show them in the project files list -->
+        <Content Remove="$(SpaRoot)**" />
+        <Content Include="obj\Debug\net6.0\12fbc7ffe642ca7e_FolderService.protodep" />
+        <Content Include="obj\Debug\net6.0\12fbc7ffe642ca7e_test.protodep" />
+        <Content Include="obj\Debug\net6.0\apphost.exe" />
+        <Content Include="obj\Debug\net6.0\refint\WebApp.dll" />
+        <Content Include="obj\Debug\net6.0\ref\WebApp.dll" />
+        <Content Include="obj\Debug\net6.0\spa.proxy.json" />
+        <Content Include="obj\Debug\net6.0\staticwebassets.build.json" />
+        <Content Include="obj\Debug\net6.0\WebApp.assets.cache" />
+        <Content Include="obj\Debug\net6.0\WebApp.csproj.AssemblyReference.cache" />
+        <Content Include="obj\Debug\net6.0\WebApp.csproj.CopyComplete" />
+        <Content Include="obj\Debug\net6.0\WebApp.csproj.CoreCompileInputs.cache" />
+        <Content Include="obj\Debug\net6.0\WebApp.csproj.FileListAbsolute.txt" />
+        <Content Include="obj\Debug\net6.0\WebApp.dll" />
+        <Content Include="obj\Debug\net6.0\WebApp.GeneratedMSBuildEditorConfig.editorconfig" />
+        <Content Include="obj\Debug\net6.0\WebApp.genruntimeconfig.cache" />
+        <Content Include="obj\Debug\net6.0\WebApp.MvcApplicationPartsAssemblyInfo.cache" />
+        <Content Include="obj\Debug\net6.0\WebApp.pdb" />
+        <Content Include="obj\Debug\net6.0\WebApp.RazorAssemblyInfo.cache" />
+        <Content Include="obj\project.assets.json" />
+        <Content Include="obj\project.nuget.cache" />
+        <Content Include="obj\project.packagespec.json" />
+        <Content Include="obj\rider.project.restore.info" />
+        <Content Include="obj\staticwebassets.pack.sentinel" />
+        <Content Include="obj\WebApp.csproj.nuget.dgspec.json" />
+        <Content Include="obj\WebApp.csproj.nuget.g.props" />
+        <Content Include="obj\WebApp.csproj.nuget.g.targets" />
+        <None Remove="$(SpaRoot)**" />
+        <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Folder Include="Controllers\" />
+        <Folder Include="obj\Debug\net6.0\staticwebassets" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <_ContentIncludedByDefault Remove="DAL\bin\Debug\net6.0\DAL.deps.json" />
+        <_ContentIncludedByDefault Remove="DAL\obj\project.assets.json" />
+        <_ContentIncludedByDefault Remove="Worker\bin\Debug\net6.0\Worker.deps.json" />
+        <_ContentIncludedByDefault Remove="Worker\bin\Debug\net6.0\Worker.runtimeconfig.json" />
+        <_ContentIncludedByDefault Remove="Worker\obj\project.assets.json" />
+        <_ContentIncludedByDefault Remove="Worker\obj\project.packagespec.json" />
+        <_ContentIncludedByDefault Remove="Worker\obj\Worker.csproj.nuget.dgspec.json" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\DAL\DAL.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Include="obj\Debug\net6.0\.NETCoreApp,Version=v6.0.AssemblyAttributes.cs" />
+        <Compile Include="obj\Debug\net6.0\WebApp.GlobalUsings.g.cs" />
+        <Compile Include="obj\Debug\net6.0\WebApp.RazorAssemblyInfo.cs" />
+    </ItemGroup>
+
+    <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
+        <!-- Ensure Node.js is installed -->
+        <Exec Command="node --version" ContinueOnError="true">
+            <Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
+        </Exec>
+        <Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build and run this project. To continue, please install Node.js from https://nodejs.org/, and then restart your command prompt or IDE." />
+        <Message Importance="high" Text="Restoring dependencies using 'npm'. This may take several minutes..." />
+        <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
+    </Target>
+
+    <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
+        <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
+        <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
+        <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build" />
+
+        <!-- Include the newly-built files in the publish output -->
+        <ItemGroup>
+            <DistFiles Include="$(SpaRoot)build\**" />
+            <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+                <RelativePath>wwwroot\%(RecursiveDir)%(FileName)%(Extension)</RelativePath>
+                <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+                <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+            </ResolvedFileToPublish>
+        </ItemGroup>
+    </Target>
 </Project>

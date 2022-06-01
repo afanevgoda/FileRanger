@@ -1,11 +1,15 @@
-﻿using DtoLibrary.Snapshot.GRPC;
+﻿using Common.Snapshot;
+using Common.Snapshot.GRPC;
+using File = Common.Snapshot.GRPC.File;
 
 namespace FileScanner.WebAppCommunication;
 
 public interface IDataSender{
-    Task SendFolderData(List<Folder> newFolders);
+    Task SendFolderData(IEnumerable<Folder> newFolders);
     
-    Task SendFilesData(List<DtoLibrary.Snapshot.GRPC.File> newFolders);
+    Task SendFilesData(IEnumerable<File> newFolders);
 
     Task<int> SendNewSnapshot(AddNewSnapshot snapshot);
+
+    Task<int> SendSnapshotResult(int snapshotId, SnapshotStatus status);
 }

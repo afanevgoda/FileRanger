@@ -1,5 +1,5 @@
-﻿using DAL.Models;
-using DtoLibrary.Snapshot.GRPC;
+﻿using Common.Snapshot.GRPC;
+using DAL.Models;
 using Helpers.Extensions;
 
 namespace FileScanner.WebAppCommunication;

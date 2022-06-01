@@ -1,0 +1,46 @@
+﻿syntax = "proto3";
+import "FolderService.proto";
+
+service SnapshotService{
+  rpc AddNewSnapshot (NewSnapshot) returns (SnapshotId);
+  rpc GetSnapshots (GetSnapshotMessage) returns (ListOfSnapshots);
+  rpc DeleteSnapshot (SnapshotId) returns (Response);
+  rpc FinishSnapshot (SnapshotResult) returns (Response);
+}
+
+message NewSnapshot{
+  string CreatedAt = 1;
+  string HostName = 2;
+  string Drive = 3;
+}
+
+message SnapshotId{
+  int32 SnapshotId = 1;
+}
+
+message ListOfSnapshots{
+  repeated SnapshotMessage snapshots = 1;
+}
+
+message SnapshotMessage {
+  int32 Id = 1;
+  string Hostname = 2;
+  string Drive = 3;
+  string CreatedAt = 4;
+}
+
+message GetSnapshotMessage {
+  string TargetHostName = 1;
+  string TargetDrive = 2;
+}
+
+message SnapshotResult {
+  int32  SnapshotId = 1;
+  Result Result = 2;
+}
+
+enum Result {
+  InProgress = 0;
+  Fail = 1;
+  Success = 2;
+}

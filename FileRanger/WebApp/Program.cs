@@ -5,7 +5,7 @@ using WebApp.Scanner;
 
 var builder = WebApplication.CreateBuilder(args);
 
-new StorageInitializer().Init(builder.Services);
+// new StorageInitializer().Init(builder.Services);
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddSingleton(
@@ -17,6 +17,7 @@ builder.Services.AddCors();
 builder.Services.AddSingleton<IScannerCollector, ScannerCollector>();
 builder.Services.AddHostedService<ScannerPinger>();
 builder.Services.AddLogging();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();
 

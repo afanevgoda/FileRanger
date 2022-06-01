@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import SnapshotSelector from '../SnapshotBrowser/SnapshotSelector';
+import SnapshotSelector from './SnapshotSelector';
 import ScannerSelector from '../SnapshotBrowser/ScannerSelector';
 import { getScanners } from '../../services/ScannerService';
-import { getSnapshots, getFolders } from '../../services/SnapshotService';
+import { getSnapshots, getFolders, getFiles } from '../../services/SnapshotService';
 import FileBrowser from '../../components/FileBrowser/FileBrowser';
 import { Divider } from "antd";
 
@@ -16,6 +16,7 @@ export default function SnapshotBrowser() {
     const [selectedSnapshot, setSelectedSnapshot] = useState();
     const [targetPath, setTargetPath] = useState();
     const [folders, setFolders] = useState([]);
+    const [files, setFiles] = useState([]);
 
     useEffect(() => {
         const request = getScanners();
@@ -38,12 +39,23 @@ export default function SnapshotBrowser() {
         if (targetPath === undefined || selectedSnapshot === undefined)
             return;
 
-        const request = getFolders(targetPath, selectedSnapshot.id);
-        request.then(x => {
+        const folderRequest = getFolders(targetPath, selectedSnapshot.id);
+        folderRequest.then(x => {
             setFolders(x);
+        })
+        const fileRequest = getFiles(targetPath, selectedSnapshot.id);
+        fileRequest.then(x => {
+            setFiles(x);
         })
     }, [selectedSnapshot, targetPath])
 
+    const snapshotComp = (snapshots.length === 0 ?
+        <></> :
+        <>
+            <Divider>Content</Divider>
+            <FileBrowser folders={folders} files={files} setTargetPath={setTargetPath} targetPath={targetPath} />
+        </>
+    );
 
     return (
         <>
@@ -53,8 +65,7 @@ export default function SnapshotBrowser() {
                 setSelectedDrive={setSelectedDrive}
                 selectedDrive={selectedDrive} />
             <SnapshotSelector snapshots={snapshots} setSelectedSnapshot={setSelectedSnapshot} />
-            <Divider>Content</Divider>
-            <FileBrowser folders={folders} setTargetPath={setTargetPath} targetPath={targetPath} />
+            {snapshotComp}
         </>
     )
 }

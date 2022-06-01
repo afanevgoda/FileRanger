@@ -1,8 +1,9 @@
 ﻿using System.Net.Mime;
 using System.Text;
 using System.Text.Json;
-using DtoLibrary.Snapshot.GRPC;
-using FileGrpcDto = DtoLibrary.Snapshot.GRPC.File;
+using Common.Snapshot;
+using Common.Snapshot.GRPC;
+using FileGrpcDto = Common.Snapshot.GRPC.File;
 
 namespace FileScanner.WebAppCommunication;
 
@@ -17,7 +18,7 @@ public class DataSender : IDataSender{
         _httpFactory = httpFactory;
     }
 
-    public async Task SendFolderData(List<Folder> newFolders) {
+    public async Task SendFolderData(IEnumerable<Folder> newFolders) {
         var message = new StringContent(
             JsonSerializer.Serialize(newFolders),
             Encoding.UTF8,
@@ -28,7 +29,7 @@ public class DataSender : IDataSender{
             .PostAsync($"{_configuration.GetSection("WebAppHost").Value}/Scanner/AddFolderData", message);
     }
 
-    public async Task SendFilesData(List<FileGrpcDto> newFiles) {
+    public async Task SendFilesData(IEnumerable<FileGrpcDto> newFiles) {
         var message = new StringContent(
             JsonSerializer.Serialize(newFiles),
             Encoding.UTF8,
@@ -47,7 +48,24 @@ public class DataSender : IDataSender{
 
         var httpClient = _httpFactory.CreateClient();
         var httpResponseMessage = await httpClient
-            .PostAsync($"{_configuration.GetSection("WebAppHost").Value}/Snapshot/AddNewSnapshot", message);
+            .PutAsync($"{_configuration.GetSection("WebAppHost").Value}/Snapshot/AddNewSnapshot", message);
+        StreamReader readStream = new StreamReader(httpResponseMessage.Content.ReadAsStream(), Encoding.UTF8);
+        return Int32.Parse(await readStream.ReadToEndAsync());
+    }
+    
+    public async Task<int> SendSnapshotResult(int snapshotId, SnapshotStatus status) {
+        var snapshotInfo = new FinishSnapshot {
+            Status = status,
+            SnapshotId = snapshotId
+        };
+        var message = new StringContent(
+            JsonSerializer.Serialize(snapshotInfo),
+            Encoding.UTF8,
+            MediaTypeNames.Application.Json);
+
+        var httpClient = _httpFactory.CreateClient();
+        var httpResponseMessage = await httpClient
+            .PostAsync($"{_configuration.GetSection("WebAppHost").Value}/Snapshot/SendSnapshotResult", message);
         StreamReader readStream = new StreamReader(httpResponseMessage.Content.ReadAsStream(), Encoding.UTF8);
         return Int32.Parse(readStream.ReadToEnd());
     }
