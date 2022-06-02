@@ -53,7 +53,11 @@ export default function SnapshotBrowser() {
         <></> :
         <>
             <Divider>Content</Divider>
-            <FileBrowser folders={folders} files={files} setTargetPath={setTargetPath} targetPath={targetPath} />
+            <FileBrowser
+                folders={folders}
+                files={files}
+                setTargetPath={setTargetPath}
+                targetPath={targetPath} />
         </>
     );
 
@@ -64,7 +68,11 @@ export default function SnapshotBrowser() {
                 setSelectedScanner={setSelectedScanner}
                 setSelectedDrive={setSelectedDrive}
                 selectedDrive={selectedDrive} />
-            <SnapshotSelector snapshots={snapshots} setSelectedSnapshot={setSelectedSnapshot} />
+            <SnapshotSelector
+                snapshots={snapshots}
+                setSelectedSnapshot={setSelectedSnapshot}
+                selectedSnapshotId={selectedSnapshot?.id}
+            />
             {snapshotComp}
         </>
     )

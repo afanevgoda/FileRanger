@@ -21,9 +21,13 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();
 
+// todo: configuration
 app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000"));
 app.UseStaticFiles();
+app.UseHttpsRedirection();
+app.UseHsts();
 app.UseRouting();
+
 
 app.MapControllerRoute(
     name: "default",

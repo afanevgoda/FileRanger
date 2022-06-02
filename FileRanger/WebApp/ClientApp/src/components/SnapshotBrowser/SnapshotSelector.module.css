@@ -1,3 +1,20 @@
-.snapshotButton {
-    background: red;
+.snapshotButton_failed {
+    background: #BB8588;
+    color: white;
+}
+
+.snapshotButton_inProgress {
+    background: #81A4CD;
+    color: white;
+}
+
+.snapshotButton_success {
+    /* background: #90AA86;
+    color: white; */
+}
+
+.snapshotButton_failed:hover,
+.snapshotButton_success:hover,
+snapshotButton_inProgress:hover {
+    color: yellow;
 }

@@ -1,6 +1,7 @@
+import config from "../config";
 
 function getScanners() {
-    return fetch(`http://localhost:5000/scanner/GetAvailableScanners`)
+    return fetch(`${config.webAppUrl}/scanner/GetAvailableScanners`)
         .then(res => res.json());
 }
 

@@ -27,6 +27,7 @@ message SnapshotMessage {
   string Hostname = 2;
   string Drive = 3;
   string CreatedAt = 4;
+  Result Result = 5;
 }
 
 message GetSnapshotMessage {
