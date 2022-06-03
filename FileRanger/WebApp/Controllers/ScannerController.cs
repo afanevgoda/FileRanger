@@ -50,8 +50,9 @@ public class ScannerController : Controller{
         client.SaveFoldersAsync(message);
     }
 
-    [HttpGet]
+    [HttpPost]
     public void StartScan([FromQuery] string targetDisk) {
+        targetDisk = targetDisk.Replace("\\", "").Replace(":", "");
         using var connection = _conFactory.CreateConnection();
         using var channel = connection.CreateModel();
         channel.QueueDeclare(queue: "scans",

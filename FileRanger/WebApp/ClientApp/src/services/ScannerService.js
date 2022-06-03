@@ -5,4 +5,9 @@ function getScanners() {
         .then(res => res.json());
 }
 
-export { getScanners }
+function startScan(targetDrive) {
+    return fetch(`${config.webAppUrl}/scanner/StartScan?targetDisk=${targetDrive}`, { method: 'POST' });
+}
+
+
+export { getScanners, startScan }

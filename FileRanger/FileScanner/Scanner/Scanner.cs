@@ -11,15 +11,21 @@ public class Scanner : IScanner{
     private readonly IDataSender _dataSender;
     private readonly ISnapshotInitializer _snapshotInitializer;
     private int _snapshotId;
+    private readonly IConfiguration _configuration;
 
     private List<Folder> _foldersToAdd = new();
     private List<File> _filesToAdd = new();
+    private readonly int _filesLimitToSend;
+    private readonly int _foldersLimitToSend;
 
     public Scanner(ILogger<Scanner> logger, IDataSender dataSender,
-        ISnapshotInitializer snapshotInitializer) {
+        ISnapshotInitializer snapshotInitializer, IConfiguration configuration) {
         _logger = logger;
         _dataSender = dataSender;
         _snapshotInitializer = snapshotInitializer;
+        _configuration = configuration;
+        Int32.TryParse(_configuration.GetSection("filesLimitToSend").Value, out _filesLimitToSend);
+        Int32.TryParse(_configuration.GetSection("foldersLimitToSend").Value, out _foldersLimitToSend);
     }
 
     public async Task ScanLocalDisk(string targetDrive) {
@@ -33,6 +39,7 @@ public class Scanner : IScanner{
         }
         catch (Exception ex) {
             _logger.LogError(ex, $"Couldn't scan disk {targetDrive}");
+            await _dataSender.SendSnapshotResult(_snapshotId, SnapshotStatus.Fail);
         }
     }
 
@@ -46,7 +53,7 @@ public class Scanner : IScanner{
                     ParentPath = targetDirectory,
                     SnapshotId = _snapshotId
                 });
-                await ScanDirectory(subDirectory.FullName);
+                // await ScanDirectory(subDirectory.FullName);
                 AddFoldersIntoStorage();
             }
 
@@ -71,16 +78,15 @@ public class Scanner : IScanner{
                 ParentPath = targetDirectory.FullName,
                 SnapshotId = _snapshotId
             });
+            AddFilesIntoStorage();
         }
-
-        AddFilesIntoStorage();
     }
 
-    private object filesLock = new ();
-    private object foldersLock = new ();
+    private readonly object filesLock = new();
+    private readonly object foldersLock = new();
 
     private async void AddFoldersIntoStorage(bool addAnyway = false) {
-        if (_foldersToAdd.Count >= 1000 || addAnyway) {
+        if (_foldersToAdd.Count >= _foldersLimitToSend || addAnyway) {
             lock (foldersLock) {
                 _dataSender.SendFolderData(_foldersToAdd);
                 _foldersToAdd.Clear();
@@ -89,7 +95,7 @@ public class Scanner : IScanner{
     }
 
     private async void AddFilesIntoStorage(bool addAnyway = false) {
-        if (_filesToAdd.Count >= 1000 || addAnyway) {
+        if (_filesToAdd.Count >= _filesLimitToSend || addAnyway) {
             lock (filesLock) {
                 _dataSender.SendFilesData(_filesToAdd);
                 _filesToAdd.Clear();

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import SnapshotSelector from './SnapshotSelector';
-import ScannerSelector from '../SnapshotBrowser/ScannerSelector';
+import ScannerSelector from './ScannerSelector';
+import SnapshotStarter from './SnapshotStarter';
 import { getScanners } from '../../services/ScannerService';
 import { getSnapshots, getFolders, getFiles } from '../../services/SnapshotService';
 import FileBrowser from '../../components/FileBrowser/FileBrowser';
@@ -68,6 +69,7 @@ export default function SnapshotBrowser() {
                 setSelectedScanner={setSelectedScanner}
                 setSelectedDrive={setSelectedDrive}
                 selectedDrive={selectedDrive} />
+            <SnapshotStarter selectedDrive={selectedDrive}/>
             <SnapshotSelector
                 snapshots={snapshots}
                 setSelectedSnapshot={setSelectedSnapshot}

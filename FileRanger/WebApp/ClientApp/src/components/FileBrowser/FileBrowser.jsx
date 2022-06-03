@@ -26,20 +26,21 @@ export default function FileBrowser({ folders, files, setTargetPath, targetPath 
         return (<Button onClick={goBack}>Go Back</Button>);
     };
 
-    const comp = folders.length !== 0 && files.length !== 0 ? (
-        <>
-            <Card title={targetPath} extra={goBackExtra()}>
-                {folders.map((folder) => (
-                    <Card.Grid className={styles.folder} onClick={() => onClick(folder)}>{folder.name}</Card.Grid>
-                ))}
-                {files.map((file) => (
-                    <Tooltip title="This is a file. It cannot be opened" color="red" mouseEnterDelay={0.5}>
-                        <Card.Grid className={styles.file}>{file.name}</Card.Grid>
-                    </Tooltip>
-                ))}
-            </Card>
-        </>
-    ) : (<Empty />);
+    const comp = folders.length === 0 && files.length === 0 && isDrivePath(targetPath) ? (<Empty />) :
+        (
+            <>
+                <Card title={targetPath} extra={goBackExtra()}>
+                    {folders.map((folder) => (
+                        <Card.Grid className={styles.folder} onClick={() => onClick(folder)}>{folder.name}</Card.Grid>
+                    ))}
+                    {files.map((file) => (
+                        <Tooltip title="This is a file. It cannot be opened" color="red" mouseEnterDelay={0.5}>
+                            <Card.Grid className={styles.file}>{file.name}</Card.Grid>
+                        </Tooltip>
+                    ))}
+                </Card>
+            </>
+        );
 
     return (comp)
 }

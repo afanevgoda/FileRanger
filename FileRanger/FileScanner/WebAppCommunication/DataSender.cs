@@ -53,7 +53,7 @@ public class DataSender : IDataSender{
         return Int32.Parse(await readStream.ReadToEndAsync());
     }
     
-    public async Task<int> SendSnapshotResult(int snapshotId, SnapshotStatus status) {
+    public async Task SendSnapshotResult(int snapshotId, SnapshotStatus status) {
         var snapshotInfo = new FinishSnapshot {
             Status = status,
             SnapshotId = snapshotId
@@ -64,9 +64,7 @@ public class DataSender : IDataSender{
             MediaTypeNames.Application.Json);
 
         var httpClient = _httpFactory.CreateClient();
-        var httpResponseMessage = await httpClient
+        await httpClient
             .PostAsync($"{_configuration.GetSection("WebAppHost").Value}/Snapshot/SendSnapshotResult", message);
-        StreamReader readStream = new StreamReader(httpResponseMessage.Content.ReadAsStream(), Encoding.UTF8);
-        return Int32.Parse(readStream.ReadToEnd());
     }
 }

@@ -15,4 +15,5 @@ function getFiles(targetPath, snapshotId) {
         .then(res => res.json());
 }
 
+
 export { getSnapshots, getFolders, getFiles }

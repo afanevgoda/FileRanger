@@ -11,5 +11,5 @@ public interface IDataSender{
 
     Task<int> SendNewSnapshot(AddNewSnapshot snapshot);
 
-    Task<int> SendSnapshotResult(int snapshotId, SnapshotStatus status);
+    Task SendSnapshotResult(int snapshotId, SnapshotStatus status);
 }
