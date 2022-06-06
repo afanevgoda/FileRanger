@@ -2,11 +2,11 @@ import React, { useState, useEffect } from "react";
 import SnapshotSelector from './SnapshotSelector';
 import ScannerSelector from './ScannerSelector';
 import SnapshotStarter from './SnapshotStarter';
+import DeleteModal from './DeleteModal';
 import { getScanners } from '../../services/ScannerService';
 import { getSnapshots, getFolders, getFiles } from '../../services/SnapshotService';
 import FileBrowser from '../../components/FileBrowser/FileBrowser';
 import { Divider } from "antd";
-
 
 export default function SnapshotBrowser() {
 
@@ -18,6 +18,7 @@ export default function SnapshotBrowser() {
     const [targetPath, setTargetPath] = useState();
     const [folders, setFolders] = useState([]);
     const [files, setFiles] = useState([]);
+    const [dyingSnapshots, setDyingSnapshots] = useState([]);
 
     useEffect(() => {
         const request = getScanners();
@@ -27,6 +28,12 @@ export default function SnapshotBrowser() {
     }, [])
 
     useEffect(() => {
+        updateSnapshotList();
+        const interval = setInterval(updateSnapshotList, 5000);
+        return () => clearInterval(interval)
+    }, [selectedScanner, selectedDrive])
+
+    const updateSnapshotList = () => {
         if (selectedDrive === null || selectedScanner === null)
             return;
         const request = getSnapshots(selectedScanner, selectedDrive);
@@ -34,7 +41,7 @@ export default function SnapshotBrowser() {
             setSnapshots(x);
             setTargetPath(selectedDrive);
         })
-    }, [selectedScanner, selectedDrive])
+    }
 
     useEffect(() => {
         if (targetPath === undefined || selectedSnapshot === undefined)
@@ -53,7 +60,7 @@ export default function SnapshotBrowser() {
     const snapshotComp = (snapshots.length === 0 ?
         <></> :
         <>
-            <Divider>Content</Divider>
+            <Divider orientation="left">Content</Divider>
             <FileBrowser
                 folders={folders}
                 files={files}
@@ -64,18 +71,21 @@ export default function SnapshotBrowser() {
 
     return (
         <>
+            <Divider orientation="left">Select host and drive</Divider>
             <ScannerSelector
                 scanners={scanners}
                 setSelectedScanner={setSelectedScanner}
                 setSelectedDrive={setSelectedDrive}
                 selectedDrive={selectedDrive} />
-            <SnapshotStarter selectedDrive={selectedDrive}/>
+            <SnapshotStarter selectedDrive={selectedDrive} />
             <SnapshotSelector
                 snapshots={snapshots}
                 setSelectedSnapshot={setSelectedSnapshot}
                 selectedSnapshotId={selectedSnapshot?.id}
+                dyingSnapshots={dyingSnapshots}
             />
             {snapshotComp}
+            <DeleteModal />
         </>
     )
 }

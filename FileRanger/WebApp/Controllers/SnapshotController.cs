@@ -93,11 +93,14 @@ public class SnapshotController : Controller{
     [HttpDelete]
     public async Task<string> DeleteSnapshot(int snapshotId) {
         var client = new SnapshotService.SnapshotServiceClient(_channel);
-
+        
         var reply = await client.DeleteSnapshotAsync(new SnapshotId() {
             SnapshotId_ = snapshotId
         });
 
+        if (reply.Result == "NOT_FOUND")
+            Response.StatusCode = 404;
+        
         return reply.Result;
     }
 }

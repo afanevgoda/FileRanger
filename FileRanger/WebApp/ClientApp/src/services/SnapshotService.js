@@ -15,5 +15,10 @@ function getFiles(targetPath, snapshotId) {
         .then(res => res.json());
 }
 
+function deleteSnapshot(snapshotId) {
+    return fetch(`${config.webAppUrl}/snapshot/DeleteSnapshot?snapshotId=${snapshotId}`,
+        { method: 'DELETE' });
+}
 
-export { getSnapshots, getFolders, getFiles }
+
+export { getSnapshots, getFolders, getFiles, deleteSnapshot }

@@ -43,6 +43,12 @@ public class SnapshotServiceImpl : SnapshotService.SnapshotServiceBase{
 
     public override Task<Response> DeleteSnapshot(SnapshotId request, ServerCallContext context) {
         var targetSnapshot = _dbContext.Snapshots.FirstOrDefault(x => x.Id == request.SnapshotId_);
+        if (targetSnapshot == null) {
+            //todo: const result (enum or status code)
+            return Task.FromResult(new Response {
+                Result = "NOT_FOUND"
+            });    
+        }
         _dbContext.Snapshots.Remove(targetSnapshot);
         _dbContext.SaveChanges();
         return Task.FromResult(new Response {

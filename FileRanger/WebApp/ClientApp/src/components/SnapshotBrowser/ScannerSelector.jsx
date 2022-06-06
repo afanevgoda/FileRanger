@@ -26,7 +26,6 @@ export default function ScannerSelector({ scanners, setSelectedScanner, setSelec
 
     return (
         <>
-            <Divider>Select host and drive</Divider>
             {dropdowns()}
         </>
     )
