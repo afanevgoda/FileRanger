@@ -27,6 +27,8 @@ class Startup{
         var configuration = new ConfigurationBuilder()
             .AddJsonFile(confFile, optional: false)
             .Build();
+        Console.WriteLine(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+        Console.WriteLine(configuration.GetSection("ConnectionString").Value);
         builder.Services.AddDbContext<AppDbContext>(options => options
             .UseNpgsql(configuration.GetSection("ConnectionString").Value));
     }
