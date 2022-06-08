@@ -26,6 +26,7 @@
     <ItemGroup>
         <ProjectReference Include="..\DAL\DAL.csproj" />
         <ProjectReference Include="..\Helpers\Helpers.csproj" />
+        <ProjectReference Include="..\WebApp\WebApp.csproj" />
     </ItemGroup>
 
     <ItemGroup>

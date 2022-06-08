@@ -10,10 +10,10 @@ COPY ./DAL/ ./DAL/
 COPY ./Helpers/ ./Helpers/
 COPY ./Common/ ./Common/
 COPY ./Protos/ ./Protos/
-WORKDIR /source/FileBrowser 
+WORKDIR /source/FileBrowser
 RUN dotnet publish SnapshotFileBrowser.csproj -c Release -o out
 
 FROM mcr.microsoft.com/dotnet/aspnet:6.0
-WORKDIR /source/FileBrowser
 COPY --from=build /source/FileBrowser/out .
 ENTRYPOINT ["dotnet", "SnapshotFileBrowser.dll"]
+CMD ["docker"]

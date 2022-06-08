@@ -1,4 +1,6 @@
-﻿namespace WebApp.Scanner;
+﻿using System.Collections.Generic;
+
+namespace WebApp.Scanner;
 
 public interface IScannerCollector{
     void CalloutScanners();

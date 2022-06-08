@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Common.Enum;
 using Common.Snapshot;
 using DAL.DB;
 using DAL.Models;
@@ -44,25 +45,28 @@ public class SnapshotServiceImpl : SnapshotService.SnapshotServiceBase{
     public override Task<Response> DeleteSnapshot(SnapshotId request, ServerCallContext context) {
         var targetSnapshot = _dbContext.Snapshots.FirstOrDefault(x => x.Id == request.SnapshotId_);
         if (targetSnapshot == null) {
-            //todo: const result (enum or status code)
             return Task.FromResult(new Response {
-                Result = "NOT_FOUND"
+                Result = GrpcResult.NOT_FOUND.ToString()
             });    
         }
         _dbContext.Snapshots.Remove(targetSnapshot);
         _dbContext.SaveChanges();
         return Task.FromResult(new Response {
-            Result = "OK"
+            Result = GrpcResult.OK.ToString()
         });
     }
 
-    //todo: response with 404 if null
     public override Task<Response> FinishSnapshot(SnapshotResult request, ServerCallContext context) {
         var targetSnapshot = _dbContext.Snapshots.FirstOrDefault(x => x.Id == request.SnapshotId);
+        if (targetSnapshot == null) {
+            return Task.FromResult(new Response {
+                Result = GrpcResult.NOT_FOUND.ToString()
+            });    
+        }
         targetSnapshot.Result = (SnapshotStatus)request.Result;
         _dbContext.SaveChanges();
         return Task.FromResult(new Response {
-            Result = "OK"
+            Result = GrpcResult.OK.ToString()
         });
     }
 }

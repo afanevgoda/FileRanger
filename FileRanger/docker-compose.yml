@@ -14,5 +14,15 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 12345
+    expose:
+      - "5432"
+  webapi:
+    build:
+      dockerfile: Dockerfile_WebApi
+      context: ./
     ports:
-      - "5432:5432"
+      - "4300:4300"
+    depends_on:
+      - rabbitmq
+  rabbitmq:
+    image: "rabbitmq"

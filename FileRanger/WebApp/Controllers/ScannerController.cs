@@ -1,7 +1,10 @@
-﻿using System.Text;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 using AutoMapper;
 using Grpc.Net.Client;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using WebApp.Scanner;
 using FileDto = Common.Snapshot.GRPC.File;

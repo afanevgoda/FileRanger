@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using Common.Enum;
 using DAL.DB;
 using Grpc.Core;
+using Grpc.Core.Utils;
 using FolderEntity = DAL.Models.Folder;
 
 namespace FileBrowser.Services;
@@ -20,7 +22,7 @@ public class FolderServiceImpl : FolderService.FolderServiceBase{
         _dbContext.SaveChanges();
 
         return Task.FromResult(new Response() {
-            Result = "OK"
+            Result = GrpcResult.OK.ToString()
         });
     }
 

@@ -1,9 +1,13 @@
-﻿using AutoMapper;
-using Common.Snapshot;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using AutoMapper;
 using Common.Snapshot.GRPC;
 using Common.Snapshot.Http;
 using Grpc.Net.Client;
 using Microsoft.AspNetCore.Mvc;
+using FileDto = Common.Snapshot.GRPC.File;
+
 
 namespace WebApp.Controllers;
 
@@ -72,7 +76,7 @@ public class SnapshotController : Controller{
     }
 
     [HttpGet]
-    public async Task<List<File>> GetFiles(string targetPath, int snapshotId) {
+    public async Task<List<FileDto>> GetFiles(string targetPath, int snapshotId) {
         var client = new FileService.FileServiceClient(_channel);
 
         var reply = await client.GetFilesAsync(new GetFilesForSnapshot {
@@ -80,7 +84,7 @@ public class SnapshotController : Controller{
             SnapshotId = snapshotId
         });
 
-        var result = reply.Files.Select(x => new File {
+        var result = reply.Files.Select(x => new FileDto {
             FullPath = x.FullPath,
             Id = x.Id,
             Name = x.Name,

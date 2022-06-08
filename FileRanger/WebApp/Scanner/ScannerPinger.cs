@@ -1,4 +1,8 @@
-﻿namespace WebApp.Scanner;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Hosting;
+
+namespace WebApp.Scanner;
 
 public class ScannerPinger : BackgroundService{
     private readonly IScannerCollector _collector;

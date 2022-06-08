@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 var startup = new Startup();
-startup.InitServices(builder);
+startup.InitServices(builder, args);
 
 var app = builder.Build();
 
@@ -15,22 +15,29 @@ startup.MigrateDataBase(app);
 app.Run();
 
 class Startup{
-    public void InitServices(WebApplicationBuilder builder) {
+    public void InitServices(WebApplicationBuilder builder, string[] args) {
         builder.Services.AddGrpc();
         builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         // builder.Services.AddLogging();
-        InitDbContext(builder);
+        InitDbContext(builder, args);
     }
 
-    private void InitDbContext(WebApplicationBuilder builder) {
-        var confFile = builder.Environment.IsDevelopment() ? "appsettings.json" : "appsettings.Development.json";
+    private void InitDbContext(WebApplicationBuilder builder, string[] args) {
+        string confFile;
+        if (args.Contains("docker"))
+            confFile = "appsettings.Docker.json";
+        else
+            confFile = builder.Environment.IsDevelopment() ? "appsettings.Development.json" : "appsettings.json";
+
+        Console.WriteLine($"Going to use {confFile}");
         var configuration = new ConfigurationBuilder()
             .AddJsonFile(confFile, optional: false)
             .Build();
-        Console.WriteLine(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-        Console.WriteLine(configuration.GetSection("ConnectionString").Value);
+        
+        var connectionString = configuration.GetSection("ConnectionString").Value;
+        Console.WriteLine($"Going connect to {connectionString}");
         builder.Services.AddDbContext<AppDbContext>(options => options
-            .UseNpgsql(configuration.GetSection("ConnectionString").Value));
+            .UseNpgsql(connectionString));
     }
 
     public void MapGrpcServices(WebApplication app) {

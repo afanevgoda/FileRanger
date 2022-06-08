@@ -1,15 +1,17 @@
 ﻿FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
-WORKDIR /source/webapp
+WORKDIR /source/WebApi
 
 COPY ./WebApp/WebApp.csproj ./
 RUN dotnet restore WebApp.csproj
 COPY ./WebApp ./
 
+WORKDIR /source/
 COPY ./DAL/ ./DAL/
+COPY ./Common/ ./Common/
+WORKDIR /source/WebApi
 RUN dotnet publish WebApp.csproj -c Release -o out
 
 FROM mcr.microsoft.com/dotnet/aspnet:6.0
-WORKDIR /source/webapp
-COPY --from=build /source/webapp/out .
-RUN ls
+COPY --from=build /source/WebApi/out .
 ENTRYPOINT ["dotnet", "WebApp.dll"]
+CMD ["docker"]
