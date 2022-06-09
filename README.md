@@ -20,3 +20,5 @@ Architecture:
 * Green = implemented
 * Yellow = In progress
 * Red = not started yet
+
+![File Ranger Architecture](https://github.com/afanevgoda/FileRanger/raw/main/FileRanger%20Architecture.jpg)
