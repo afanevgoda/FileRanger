@@ -24,25 +24,34 @@ public static partial class FolderServiceReflection {
         string.Concat(
           "ChNGb2xkZXJTZXJ2aWNlLnByb3RvIhoKCFJlc3BvbnNlEg4KBlJlc3VsdBgB",
           "IAEoCSIoCg1MaXN0T2ZGb2xkZXJzEhcKBmZvbGRlchgBIAMoCzIHLkZvbGRl",
-          "ciJcCgZGb2xkZXISCgoCSWQYASABKAUSDAoETmFtZRgCIAEoCRIQCghGdWxs",
+          "ciJ1CgZGb2xkZXISCgoCSWQYASABKAUSDAoETmFtZRgCIAEoCRIQCghGdWxs",
           "UGF0aBgDIAEoCRISCgpQYXJlbnRQYXRoGAQgASgJEhIKClNuYXBzaG90SWQY",
-          "BSABKAUiPgoUR2V0Rm9sZGVyRm9yU25hcHNob3QSEgoKVGFyZ2V0UGF0aBgB",
-          "IAEoCRISCgpTbmFwc2hvdElkGAIgASgFMm4KDUZvbGRlclNlcnZpY2USKAoL",
-          "U2F2ZUZvbGRlcnMSDi5MaXN0T2ZGb2xkZXJzGgkuUmVzcG9uc2USMwoKR2V0",
-          "Rm9sZGVycxIVLkdldEZvbGRlckZvclNuYXBzaG90Gg4uTGlzdE9mRm9sZGVy",
-          "c2IGcHJvdG8z"));
+          "BSABKAUSFwoGU3RhdHVzGAcgASgOMgcuU3RhdHVzIj4KFEdldEZvbGRlckZv",
+          "clNuYXBzaG90EhIKClRhcmdldFBhdGgYASABKAkSEgoKU25hcHNob3RJZBgC",
+          "IAEoBSoZCgZTdGF0dXMSBgoCT2sQABIHCgNOb2sQATJuCg1Gb2xkZXJTZXJ2",
+          "aWNlEigKC1NhdmVGb2xkZXJzEg4uTGlzdE9mRm9sZGVycxoJLlJlc3BvbnNl",
+          "EjMKCkdldEZvbGRlcnMSFS5HZXRGb2xkZXJGb3JTbmFwc2hvdBoOLkxpc3RP",
+          "ZkZvbGRlcnNiBnByb3RvMw=="));
     descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
         new pbr::FileDescriptor[] { },
-        new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
+        new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Status), }, null, new pbr::GeneratedClrTypeInfo[] {
           new pbr::GeneratedClrTypeInfo(typeof(global::Response), global::Response.Parser, new[]{ "Result" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::ListOfFolders), global::ListOfFolders.Parser, new[]{ "Folder" }, null, null, null, null),
-          new pbr::GeneratedClrTypeInfo(typeof(global::Folder), global::Folder.Parser, new[]{ "Id", "Name", "FullPath", "ParentPath", "SnapshotId" }, null, null, null, null),
+          new pbr::GeneratedClrTypeInfo(typeof(global::Folder), global::Folder.Parser, new[]{ "Id", "Name", "FullPath", "ParentPath", "SnapshotId", "Status" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::GetFolderForSnapshot), global::GetFolderForSnapshot.Parser, new[]{ "TargetPath", "SnapshotId" }, null, null, null, null)
         }));
   }
   #endregion
 
 }
+#region Enums
+public enum Status {
+  [pbr::OriginalName("Ok")] Ok = 0,
+  [pbr::OriginalName("Nok")] Nok = 1,
+}
+
+#endregion
+
 #region Messages
 public sealed partial class Response : pb::IMessage<Response>
 #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -450,6 +459,7 @@ public sealed partial class Folder : pb::IMessage<Folder>
     fullPath_ = other.fullPath_;
     parentPath_ = other.parentPath_;
     snapshotId_ = other.snapshotId_;
+    status_ = other.status_;
     _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
   }
 
@@ -519,6 +529,18 @@ public sealed partial class Folder : pb::IMessage<Folder>
     }
   }
 
+  /// <summary>Field number for the "Status" field.</summary>
+  public const int StatusFieldNumber = 7;
+  private global::Status status_ = global::Status.Ok;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public global::Status Status {
+    get { return status_; }
+    set {
+      status_ = value;
+    }
+  }
+
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public override bool Equals(object other) {
@@ -539,6 +561,7 @@ public sealed partial class Folder : pb::IMessage<Folder>
     if (FullPath != other.FullPath) return false;
     if (ParentPath != other.ParentPath) return false;
     if (SnapshotId != other.SnapshotId) return false;
+    if (Status != other.Status) return false;
     return Equals(_unknownFields, other._unknownFields);
   }
 
@@ -551,6 +574,7 @@ public sealed partial class Folder : pb::IMessage<Folder>
     if (FullPath.Length != 0) hash ^= FullPath.GetHashCode();
     if (ParentPath.Length != 0) hash ^= ParentPath.GetHashCode();
     if (SnapshotId != 0) hash ^= SnapshotId.GetHashCode();
+    if (Status != global::Status.Ok) hash ^= Status.GetHashCode();
     if (_unknownFields != null) {
       hash ^= _unknownFields.GetHashCode();
     }
@@ -589,6 +613,10 @@ public sealed partial class Folder : pb::IMessage<Folder>
       output.WriteRawTag(40);
       output.WriteInt32(SnapshotId);
     }
+    if (Status != global::Status.Ok) {
+      output.WriteRawTag(56);
+      output.WriteEnum((int) Status);
+    }
     if (_unknownFields != null) {
       _unknownFields.WriteTo(output);
     }
@@ -619,6 +647,10 @@ public sealed partial class Folder : pb::IMessage<Folder>
       output.WriteRawTag(40);
       output.WriteInt32(SnapshotId);
     }
+    if (Status != global::Status.Ok) {
+      output.WriteRawTag(56);
+      output.WriteEnum((int) Status);
+    }
     if (_unknownFields != null) {
       _unknownFields.WriteTo(ref output);
     }
@@ -643,6 +675,9 @@ public sealed partial class Folder : pb::IMessage<Folder>
     }
     if (SnapshotId != 0) {
       size += 1 + pb::CodedOutputStream.ComputeInt32Size(SnapshotId);
+    }
+    if (Status != global::Status.Ok) {
+      size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Status);
     }
     if (_unknownFields != null) {
       size += _unknownFields.CalculateSize();
@@ -670,6 +705,9 @@ public sealed partial class Folder : pb::IMessage<Folder>
     }
     if (other.SnapshotId != 0) {
       SnapshotId = other.SnapshotId;
+    }
+    if (other.Status != global::Status.Ok) {
+      Status = other.Status;
     }
     _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
   }
@@ -706,6 +744,10 @@ public sealed partial class Folder : pb::IMessage<Folder>
           SnapshotId = input.ReadInt32();
           break;
         }
+        case 56: {
+          Status = (global::Status) input.ReadEnum();
+          break;
+        }
       }
     }
   #endif
@@ -739,6 +781,10 @@ public sealed partial class Folder : pb::IMessage<Folder>
         }
         case 40: {
           SnapshotId = input.ReadInt32();
+          break;
+        }
+        case 56: {
+          Status = (global::Status) input.ReadEnum();
           break;
         }
       }

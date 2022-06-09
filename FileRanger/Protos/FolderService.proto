@@ -19,9 +19,16 @@ message Folder {
   string FullPath = 3;
   string ParentPath = 4;
   int32 SnapshotId = 5;
+  Status Status = 7;
 }
 
 message GetFolderForSnapshot {
   string TargetPath = 1;
   int32 SnapshotId = 2;
+}
+
+
+enum Status {
+  Ok = 0;
+  Nok = 1;
 }

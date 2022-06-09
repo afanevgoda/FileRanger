@@ -1,19 +1,20 @@
 import React, { useEffect } from "react";
 import { Menu, Dropdown, Button, Space, Divider } from 'antd';
 
-export default function ScannerSelector({ scanners, setSelectedScanner, setSelectedDrive, selectedDrive }) {
+export default function ScannerSelector({ scanners, setSelectedScanner, setSelectedDrive, selectedDrive, setTargetPath }) {
 
     const onDriveSelect = (drive, host) => {
         setSelectedDrive(drive);
         setSelectedScanner(host);
+        setTargetPath(drive);
     };
 
     const scannerDropdown = (hostName, drives) => {
-        const kek = drives.map(x => ({
+        const items = drives.map(x => ({
             key: x,
             label: x
         }));
-        return (<Menu items={kek} onClick={({ key }) => onDriveSelect(key, hostName)}></Menu>)
+        return (<Menu items={items} onClick={({ key }) => onDriveSelect(key, hostName)}></Menu>)
     }
 
     const dropdowns = () => (

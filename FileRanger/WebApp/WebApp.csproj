@@ -30,7 +30,7 @@
 <!--            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>-->
 <!--            <PrivateAssets>all</PrivateAssets>-->
 <!--        </PackageReference>-->
-        <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="6.0.5" />
+<!--        <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="6.0.5" />-->
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.5" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.5" />
         <PackageReference Include="NEST" Version="7.17.1" />
@@ -71,6 +71,8 @@
         <Content Include="obj\WebApp.csproj.nuget.g.targets" />
         <None Remove="$(SpaRoot)**" />
         <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
+        <None Remove="obj\**" />
+        <Content Remove="obj\**" />
     </ItemGroup>
 
     <ItemGroup>
@@ -95,7 +97,12 @@
     <ItemGroup>
 <!--        <Compile Include="obj\Debug\net6.0\.NETCoreApp,Version=v6.0.AssemblyAttributes.cs" />-->
         <Compile Include="obj\Debug\net6.0\WebApp.GlobalUsings.g.cs" />
+        <Compile Remove="obj\**" />
 <!--        <Compile Include="obj\Debug\net6.0\WebApp.RazorAssemblyInfo.cs" />-->
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="obj\**" />
     </ItemGroup>
 
     <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

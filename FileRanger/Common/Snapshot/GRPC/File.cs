@@ -1,4 +1,6 @@
-﻿namespace Common.Snapshot.GRPC;
+﻿using Common.Enum;
+
+namespace Common.Snapshot.GRPC;
 
 public class File{
     public int Id {get;set;}
@@ -7,4 +9,5 @@ public class File{
     public string ParentPath {get;set;}
     public string Extension {get;set;}
     public int SnapshotId {get;set;}
+    public ItemStatus Status { get; set; }
 }

@@ -1,4 +1,6 @@
-﻿namespace Common.Snapshot.GRPC;
+﻿using Common.Enum;
+
+namespace Common.Snapshot.GRPC;
 
 public class Folder{
     public int Id { get; set; }
@@ -6,4 +8,5 @@ public class Folder{
     public string FullPath { get; set; }
     public string ParentPath { get; set; }
     public int SnapshotId { get; set; }
+    public ItemStatus Status { get; set; }
 }

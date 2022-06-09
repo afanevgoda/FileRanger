@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Common.Enum;
 using DAL.DB;
 using Grpc.Core;
 using Microsoft.EntityFrameworkCore;
@@ -30,7 +31,7 @@ public class FileServiceImpl : FileService.FileServiceBase{
         _dbContext.SaveChanges();
 
         return Task.FromResult(new Response() {
-            Result = "OK"
+            Result = GrpcResult.OK.ToString()
         });
     }
 }

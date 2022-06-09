@@ -20,9 +20,22 @@ services:
     build:
       dockerfile: Dockerfile_WebApi
       context: ./
+    environment:
+      - ASPNETCORE_URLS=http://+:80
     ports:
       - "4300:4300"
     depends_on:
       - rabbitmq
+    restart: on-failure
   rabbitmq:
     image: "rabbitmq"
+    hostname: rabbitmq
+#    ports:
+#      - "5672:5672"
+    expose:
+      - "5672"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:5672" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5

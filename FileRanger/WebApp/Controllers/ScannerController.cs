@@ -71,7 +71,6 @@ public class ScannerController : Controller{
             routingKey: "scans",
             basicProperties: null,
             body: body);
-        Console.WriteLine(" [x] Sent {0}", message);
     }
 
     [HttpPost]

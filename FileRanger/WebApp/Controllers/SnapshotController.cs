@@ -2,11 +2,13 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Common.Enum;
 using Common.Snapshot.GRPC;
 using Common.Snapshot.Http;
 using Grpc.Net.Client;
 using Microsoft.AspNetCore.Mvc;
 using FileDto = Common.Snapshot.GRPC.File;
+using FolderDto = Common.Snapshot.GRPC.Folder;
 
 
 namespace WebApp.Controllers;
@@ -57,7 +59,7 @@ public class SnapshotController : Controller{
     }
 
     [HttpGet]
-    public async Task<List<Folder>> GetFolders(string targetPath, int snapshotId) {
+    public async Task<List<FolderDto>> GetFolders(string targetPath, int snapshotId) {
         var client = new FolderService.FolderServiceClient(_channel);
 
         var reply = await client.GetFoldersAsync(new GetFolderForSnapshot {
@@ -65,11 +67,12 @@ public class SnapshotController : Controller{
             SnapshotId = snapshotId
         });
 
-        var result = reply.Folder.Select(x => new Folder {
+        var result = reply.Folder.Select(x => new FolderDto {
             FullPath = x.FullPath,
             Id = x.Id,
             Name = x.Name,
-            ParentPath = x.ParentPath
+            ParentPath = x.ParentPath,
+            Status = (ItemStatus)x.Status
         }).ToList();
 
         return result;
@@ -88,7 +91,8 @@ public class SnapshotController : Controller{
             FullPath = x.FullPath,
             Id = x.Id,
             Name = x.Name,
-            ParentPath = x.ParentPath
+            ParentPath = x.ParentPath,
+            Status = (ItemStatus)x.Status
         }).ToList();
 
         return result;
@@ -102,7 +106,7 @@ public class SnapshotController : Controller{
             SnapshotId_ = snapshotId
         });
 
-        if (reply.Result == "NOT_FOUND")
+        if (reply.Result == GrpcResult.NOT_FOUND.ToString())
             Response.StatusCode = 404;
         
         return reply.Result;

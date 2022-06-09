@@ -39,7 +39,7 @@ export default function SnapshotBrowser() {
         const request = getSnapshots(selectedScanner, selectedDrive);
         request.then(x => {
             setSnapshots(x);
-            setTargetPath(selectedDrive);
+            // setTargetPath(selectedDrive);
         })
     }
 
@@ -76,7 +76,8 @@ export default function SnapshotBrowser() {
                 scanners={scanners}
                 setSelectedScanner={setSelectedScanner}
                 setSelectedDrive={setSelectedDrive}
-                selectedDrive={selectedDrive} />
+                selectedDrive={selectedDrive}
+                setTargetPath={setTargetPath} />
             <SnapshotStarter selectedDrive={selectedDrive} />
             <SnapshotSelector
                 snapshots={snapshots}

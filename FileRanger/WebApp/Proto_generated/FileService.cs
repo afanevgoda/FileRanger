@@ -22,18 +22,19 @@ public static partial class FileServiceReflection {
   static FileServiceReflection() {
     byte[] descriptorData = global::System.Convert.FromBase64String(
         string.Concat(
-          "ChFGaWxlU2VydmljZS5wcm90bxoTRm9sZGVyU2VydmljZS5wcm90byJtCgRG",
-          "aWxlEgoKAklkGAEgASgFEgwKBE5hbWUYAiABKAkSEAoIRnVsbFBhdGgYAyAB",
-          "KAkSEgoKUGFyZW50UGF0aBgEIAEoCRIRCglFeHRlbnNpb24YBSABKAkSEgoK",
-          "U25hcHNob3RJZBgGIAEoCSIjCgtMaXN0T2ZGaWxlcxIUCgVmaWxlcxgBIAMo",
-          "CzIFLkZpbGUiPQoTR2V0RmlsZXNGb3JTbmFwc2hvdBISCgpUYXJnZXRQYXRo",
-          "GAEgASgJEhIKClNuYXBzaG90SWQYAiABKAUyYwoLRmlsZVNlcnZpY2USJAoJ",
-          "U2F2ZUZpbGVzEgwuTGlzdE9mRmlsZXMaCS5SZXNwb25zZRIuCghHZXRGaWxl",
-          "cxIULkdldEZpbGVzRm9yU25hcHNob3QaDC5MaXN0T2ZGaWxlc2IGcHJvdG8z"));
+          "ChFGaWxlU2VydmljZS5wcm90bxoTRm9sZGVyU2VydmljZS5wcm90byKGAQoE",
+          "RmlsZRIKCgJJZBgBIAEoBRIMCgROYW1lGAIgASgJEhAKCEZ1bGxQYXRoGAMg",
+          "ASgJEhIKClBhcmVudFBhdGgYBCABKAkSEQoJRXh0ZW5zaW9uGAUgASgJEhIK",
+          "ClNuYXBzaG90SWQYBiABKAkSFwoGU3RhdHVzGAcgASgOMgcuU3RhdHVzIiMK",
+          "C0xpc3RPZkZpbGVzEhQKBWZpbGVzGAEgAygLMgUuRmlsZSI9ChNHZXRGaWxl",
+          "c0ZvclNuYXBzaG90EhIKClRhcmdldFBhdGgYASABKAkSEgoKU25hcHNob3RJ",
+          "ZBgCIAEoBTJjCgtGaWxlU2VydmljZRIkCglTYXZlRmlsZXMSDC5MaXN0T2ZG",
+          "aWxlcxoJLlJlc3BvbnNlEi4KCEdldEZpbGVzEhQuR2V0RmlsZXNGb3JTbmFw",
+          "c2hvdBoMLkxpc3RPZkZpbGVzYgZwcm90bzM="));
     descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
         new pbr::FileDescriptor[] { global::FolderServiceReflection.Descriptor, },
         new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-          new pbr::GeneratedClrTypeInfo(typeof(global::File), global::File.Parser, new[]{ "Id", "Name", "FullPath", "ParentPath", "Extension", "SnapshotId" }, null, null, null, null),
+          new pbr::GeneratedClrTypeInfo(typeof(global::File), global::File.Parser, new[]{ "Id", "Name", "FullPath", "ParentPath", "Extension", "SnapshotId", "Status" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::ListOfFiles), global::ListOfFiles.Parser, new[]{ "Files" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::GetFilesForSnapshot), global::GetFilesForSnapshot.Parser, new[]{ "TargetPath", "SnapshotId" }, null, null, null, null)
         }));
@@ -82,6 +83,7 @@ public sealed partial class File : pb::IMessage<File>
     parentPath_ = other.parentPath_;
     extension_ = other.extension_;
     snapshotId_ = other.snapshotId_;
+    status_ = other.status_;
     _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
   }
 
@@ -163,6 +165,18 @@ public sealed partial class File : pb::IMessage<File>
     }
   }
 
+  /// <summary>Field number for the "Status" field.</summary>
+  public const int StatusFieldNumber = 7;
+  private global::Status status_ = global::Status.Ok;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public global::Status Status {
+    get { return status_; }
+    set {
+      status_ = value;
+    }
+  }
+
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public override bool Equals(object other) {
@@ -184,6 +198,7 @@ public sealed partial class File : pb::IMessage<File>
     if (ParentPath != other.ParentPath) return false;
     if (Extension != other.Extension) return false;
     if (SnapshotId != other.SnapshotId) return false;
+    if (Status != other.Status) return false;
     return Equals(_unknownFields, other._unknownFields);
   }
 
@@ -197,6 +212,7 @@ public sealed partial class File : pb::IMessage<File>
     if (ParentPath.Length != 0) hash ^= ParentPath.GetHashCode();
     if (Extension.Length != 0) hash ^= Extension.GetHashCode();
     if (SnapshotId.Length != 0) hash ^= SnapshotId.GetHashCode();
+    if (Status != global::Status.Ok) hash ^= Status.GetHashCode();
     if (_unknownFields != null) {
       hash ^= _unknownFields.GetHashCode();
     }
@@ -239,6 +255,10 @@ public sealed partial class File : pb::IMessage<File>
       output.WriteRawTag(50);
       output.WriteString(SnapshotId);
     }
+    if (Status != global::Status.Ok) {
+      output.WriteRawTag(56);
+      output.WriteEnum((int) Status);
+    }
     if (_unknownFields != null) {
       _unknownFields.WriteTo(output);
     }
@@ -273,6 +293,10 @@ public sealed partial class File : pb::IMessage<File>
       output.WriteRawTag(50);
       output.WriteString(SnapshotId);
     }
+    if (Status != global::Status.Ok) {
+      output.WriteRawTag(56);
+      output.WriteEnum((int) Status);
+    }
     if (_unknownFields != null) {
       _unknownFields.WriteTo(ref output);
     }
@@ -300,6 +324,9 @@ public sealed partial class File : pb::IMessage<File>
     }
     if (SnapshotId.Length != 0) {
       size += 1 + pb::CodedOutputStream.ComputeStringSize(SnapshotId);
+    }
+    if (Status != global::Status.Ok) {
+      size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Status);
     }
     if (_unknownFields != null) {
       size += _unknownFields.CalculateSize();
@@ -330,6 +357,9 @@ public sealed partial class File : pb::IMessage<File>
     }
     if (other.SnapshotId.Length != 0) {
       SnapshotId = other.SnapshotId;
+    }
+    if (other.Status != global::Status.Ok) {
+      Status = other.Status;
     }
     _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
   }
@@ -370,6 +400,10 @@ public sealed partial class File : pb::IMessage<File>
           SnapshotId = input.ReadString();
           break;
         }
+        case 56: {
+          Status = (global::Status) input.ReadEnum();
+          break;
+        }
       }
     }
   #endif
@@ -407,6 +441,10 @@ public sealed partial class File : pb::IMessage<File>
         }
         case 50: {
           SnapshotId = input.ReadString();
+          break;
+        }
+        case 56: {
+          Status = (global::Status) input.ReadEnum();
           break;
         }
       }

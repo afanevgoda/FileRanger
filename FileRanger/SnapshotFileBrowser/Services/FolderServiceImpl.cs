@@ -22,6 +22,7 @@ public class FolderServiceImpl : FolderService.FolderServiceBase{
         _dbContext.SaveChanges();
 
         return Task.FromResult(new Response() {
+            //todo: toString -> int
             Result = GrpcResult.OK.ToString()
         });
     }

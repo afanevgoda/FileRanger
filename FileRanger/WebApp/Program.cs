@@ -26,7 +26,7 @@ builder.Services.AddSingleton(
 );
 builder.Services.AddScoped(x => new ConnectionFactory
     { HostName = configuration.GetSection("RmqHost").Value });
-builder.Services.AddCors();
+// builder.Services.AddCors();
 builder.Services.AddSingleton<IScannerCollector, ScannerCollector>();
 builder.Services.AddHostedService<ScannerPinger>();
 builder.Services.AddLogging();
@@ -37,8 +37,8 @@ var app = builder.Build();
 // todo: configuration
 app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000"));
 app.UseStaticFiles();
-app.UseHttpsRedirection();
-app.UseHsts();
+// app.UseHttpsRedirection();
+// app.UseHsts();
 app.UseRouting();
 
 

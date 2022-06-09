@@ -1,5 +1,5 @@
 const config = {
-    webAppUrl: "https://localhost:4301"
+    webAppUrl: "http://localhost:4300"
 }
 
 export default config;

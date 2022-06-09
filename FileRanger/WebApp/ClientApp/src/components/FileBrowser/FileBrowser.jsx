@@ -30,9 +30,18 @@ export default function FileBrowser({ folders, files, setTargetPath, targetPath 
         (
             <>
                 <Card title={targetPath} extra={goBackExtra()}>
-                    {folders.map((folder) => (
-                        <Card.Grid className={styles.folder} onClick={() => onClick(folder)}>{folder.name}</Card.Grid>
-                    ))}
+                    {folders.map((folder) => {
+                        const isFailed = folder.status != 0;
+                        if (isFailed)
+                            return (
+                                <Tooltip title="Scanner could not manage to scan this folder" color="red">
+                                    <Card.Grid className={styles.folderFailed} onClick={() => onClick(folder)}>{folder.name}</Card.Grid>
+                                </Tooltip>
+                            )
+                        return (<Card.Grid className={styles.folder} onClick={() => onClick(folder)}>{folder.name}</Card.Grid>)
+                    }
+
+                    )}
                     {files.map((file) => (
                         <Tooltip title="This is a file. It cannot be opened" color="red" mouseEnterDelay={0.5}>
                             <Card.Grid className={styles.file}>{file.name}</Card.Grid>

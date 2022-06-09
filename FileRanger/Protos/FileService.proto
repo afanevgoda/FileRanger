@@ -13,6 +13,7 @@ message File {
   string ParentPath = 4;
   string Extension = 5;
   string SnapshotId = 6;
+  Status Status = 7;
 }
 
 message ListOfFiles{

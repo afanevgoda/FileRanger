@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using Common.Enum;
 using Common.Snapshot;
 using Common.Snapshot.GRPC;
 using FileScanner.WebAppCommunication;
@@ -51,18 +52,33 @@ public class Scanner : IScanner{
                     Name = subDirectory.Name,
                     FullPath = subDirectory.FullName,
                     ParentPath = targetDirectory,
-                    SnapshotId = _snapshotId
+                    SnapshotId = _snapshotId,
+                    Status = ItemStatus.Ok
                 });
-                // await ScanDirectory(subDirectory.FullName);
+                await ScanDirectory(subDirectory.FullName);
                 AddFoldersIntoStorage();
             }
 
             ScanFiles(directory);
         }
         catch (UnauthorizedAccessException) {
+            _foldersToAdd.Add(new Folder {
+                Name = targetDirectory,
+                FullPath = targetDirectory,
+                ParentPath = targetDirectory,
+                SnapshotId = _snapshotId,
+                Status = ItemStatus.Failed
+            });
             _logger.LogError($"Could not access {targetDirectory}");
         }
         catch (Exception ex) {
+            _foldersToAdd.Add(new Folder {
+                Name = targetDirectory,
+                FullPath = targetDirectory,
+                ParentPath = targetDirectory,
+                SnapshotId = _snapshotId,
+                Status = ItemStatus.Failed
+            });
             _logger.LogError(ex, $"Couldn't scan directory {targetDirectory}");
         }
 
@@ -85,7 +101,7 @@ public class Scanner : IScanner{
     private readonly object filesLock = new();
     private readonly object foldersLock = new();
 
-    private async void AddFoldersIntoStorage(bool addAnyway = false) {
+    private void AddFoldersIntoStorage(bool addAnyway = false) {
         if (_foldersToAdd.Count >= _foldersLimitToSend || addAnyway) {
             lock (foldersLock) {
                 _dataSender.SendFolderData(_foldersToAdd);
@@ -94,7 +110,7 @@ public class Scanner : IScanner{
         }
     }
 
-    private async void AddFilesIntoStorage(bool addAnyway = false) {
+    private void AddFilesIntoStorage(bool addAnyway = false) {
         if (_filesToAdd.Count >= _filesLimitToSend || addAnyway) {
             lock (filesLock) {
                 _dataSender.SendFilesData(_filesToAdd);

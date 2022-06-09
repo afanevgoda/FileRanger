@@ -2,9 +2,21 @@
     text-align: center;
     cursor: pointer;
     font-weight: bold;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
-.folder:hover {
+.folderFailed {
+    background: #f5222d;
+    color: white;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.folder:hover,
+.folder-failed:hover {
     background: aliceblue;
 }
 
