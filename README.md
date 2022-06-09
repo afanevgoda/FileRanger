@@ -22,3 +22,7 @@ Architecture:
 * Red = not started yet
 
 ![File Ranger Architecture](https://github.com/afanevgoda/FileRanger/raw/main/FileRanger%20Architecture.jpg)
+
+Known bugs:
+
+* Deleting snapshot while it is in progress crashes the **SnapshotFileBrowser** service
