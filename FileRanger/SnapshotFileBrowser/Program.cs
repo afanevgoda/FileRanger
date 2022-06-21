@@ -1,4 +1,6 @@
 using DAL.DB;
+using DAL.Models;
+using DAL.Repositories;
 using FileBrowser.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,6 +22,7 @@ class Startup{
         builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         // builder.Services.AddLogging();
         InitDbContext(builder, args);
+        InitRepositories(builder);
     }
 
     private void InitDbContext(WebApplicationBuilder builder, string[] args) {
@@ -33,7 +36,7 @@ class Startup{
         var configuration = new ConfigurationBuilder()
             .AddJsonFile(confFile, optional: false)
             .Build();
-        
+
         var connectionString = configuration.GetSection("ConnectionString").Value;
         Console.WriteLine($"Going connect to {connectionString}");
         builder.Services.AddDbContext<AppDbContext>(options => options
@@ -50,5 +53,11 @@ class Startup{
         using var scope = app.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         db.Database.Migrate();
+    }
+
+    private void InitRepositories(WebApplicationBuilder builder) {
+        builder.Services.AddScoped<IRepository<Snapshot>, SnapshotRepositoryDb>();
+        builder.Services.AddScoped<IRepository<DAL.Models.File>, FileRepositoryDb>();
+        builder.Services.AddScoped<IRepository<DAL.Models.Folder>, FolderRepositoryDb>();
     }
 }

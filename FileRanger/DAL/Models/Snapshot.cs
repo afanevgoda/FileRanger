@@ -4,12 +4,7 @@ using Common.Snapshot;
 
 namespace DAL.Models;
 
-public class Snapshot{
-    [Key]
-    [Column("id")]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int Id { get; set; }
-
+public class Snapshot : Model{
     [Column("createdAt")] public DateTime CreatedAt { get; set; }
 
     [Column("drive")] public string Drive { get; set; }

@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Common.Enum;
 using DAL.DB;
+using DAL.Models;
+using DAL.Repositories;
 using Grpc.Core;
 using Grpc.Core.Utils;
 using FolderEntity = DAL.Models.Folder;
@@ -8,19 +10,27 @@ using FolderEntity = DAL.Models.Folder;
 namespace FileBrowser.Services;
 
 public class FolderServiceImpl : FolderService.FolderServiceBase{
-    private readonly AppDbContext _dbContext;
     private readonly IMapper _mapper;
+    private readonly IRepository<Snapshot> _snapshotRepo;
+    private readonly IRepository<FolderEntity> _folderRepo;
 
-    public FolderServiceImpl(AppDbContext dbContext, IMapper mapper) {
-        _dbContext = dbContext;
+    public FolderServiceImpl(IRepository<Snapshot> snapshotRepo, IRepository<DAL.Models.Folder> folderRepo, IMapper mapper) {
+        _snapshotRepo = snapshotRepo;
+        _folderRepo = folderRepo;
         _mapper = mapper;
     }
 
     public override Task<Response> SaveFolders(ListOfFolders request, ServerCallContext context) {
         var folders = _mapper.Map<List<Folder>, List<DAL.Models.Folder>>(request.Folder.ToList());
-        _dbContext.Folders.AddRange(folders);
-        _dbContext.SaveChanges();
 
+        var snapshotId = folders.FirstOrDefault()?.SnapshotId;
+        if (!_snapshotRepo.DoesExistWithId(snapshotId))
+            return Task.FromResult(new Response() {
+                //todo: toString -> int
+                Result = GrpcResult.NOT_FOUND.ToString()
+            });
+
+        _folderRepo.AddRange(folders);
         return Task.FromResult(new Response() {
             //todo: toString -> int
             Result = GrpcResult.OK.ToString()
@@ -29,9 +39,8 @@ public class FolderServiceImpl : FolderService.FolderServiceBase{
 
     public override Task<ListOfFolders> GetFolders(GetFolderForSnapshot request, ServerCallContext context) {
         var result = new ListOfFolders();
-        var subFolders = _dbContext.Folders.Where(x =>
-            x.ParentPath == request.TargetPath
-            && x.SnapshotId == request.SnapshotId).ToList();
+        var subFolders = _folderRepo.GetByCondition(folder => folder.ParentPath == request.TargetPath
+                                             && folder.SnapshotId == request.SnapshotId);
         var folders = _mapper.Map<List<DAL.Models.Folder>, List<Folder>>(subFolders);
         result.Folder.AddRange(folders);
 

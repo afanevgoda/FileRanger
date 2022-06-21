@@ -32,25 +32,27 @@ public class ScannerController : Controller{
     }
 
     [HttpPost]
-    public void AddFilesData([FromBody] List<FileDto> newFiles) {
+    public async Task<string> AddFilesData([FromBody] List<FileDto> newFiles) {
         var filesGrps = _mapper.Map<List<FileDto>, List<FileGrpc>>(newFiles);
         var client = new FileService.FileServiceClient(_channel);
 
         var message = new ListOfFiles();
         message.Files.AddRange(filesGrps);
 
-        client.SaveFiles(message);
+        var result = await client.SaveFilesAsync(message);
+        return result.Result;
     }
 
     [HttpPost]
-    public void AddFolderData([FromBody] List<FolderDto> newFolders) {
+    public async Task<string> AddFolderData([FromBody] List<FolderDto> newFolders) {
         var filesGrps = _mapper.Map<List<FolderDto>, List<FolderGrpc>>(newFolders);
         var client = new FolderService.FolderServiceClient(_channel);
 
         var message = new ListOfFolders();
         message.Folder.AddRange(filesGrps);
 
-        client.SaveFoldersAsync(message);
+        var result = await client.SaveFoldersAsync(message);
+        return result.Result;
     }
 
     [HttpPost]

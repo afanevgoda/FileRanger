@@ -4,11 +4,7 @@ using Common.Enum;
 
 namespace DAL.Models;
 
-public class File{
-    [Key]
-    [Column("id")]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int Id { get; set; }
+public class File : Model{
 
     [Column("name")] public string Name { get; set; }
     [Column("fullPath")] public string FullPath { get; set; }

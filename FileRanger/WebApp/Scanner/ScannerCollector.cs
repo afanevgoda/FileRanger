@@ -40,10 +40,6 @@ public class ScannerCollector : IScannerCollector{
         if (isAlreadyAdded)
             return;
         
-        // if (isAlreadyAdded && scannerInfo.Drives.Any(x => !sameScanner.Drives.Contains(x))) {
-        //     
-        // }
-        
         Scanners.Add(scannerInfo);
     }
 

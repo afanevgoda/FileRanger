@@ -1,19 +1,19 @@
 ﻿using AutoMapper;
 using Common.Enum;
 using Common.Snapshot;
-using DAL.DB;
 using DAL.Models;
+using DAL.Repositories;
 using Grpc.Core;
 using Helpers.Extensions;
 
 namespace FileBrowser.Services;
 
 public class SnapshotServiceImpl : SnapshotService.SnapshotServiceBase{
-    private readonly AppDbContext _dbContext;
     private readonly IMapper _mapper;
+    private readonly IRepository<Snapshot> _snapshotRepo;
 
-    public SnapshotServiceImpl(AppDbContext dbContext, IMapper mapper) {
-        _dbContext = dbContext;
+    public SnapshotServiceImpl(IRepository<Snapshot> snapshotRepo, IMapper mapper) {
+        _snapshotRepo = snapshotRepo;
         _mapper = mapper;
     }
 
@@ -24,18 +24,15 @@ public class SnapshotServiceImpl : SnapshotService.SnapshotServiceBase{
             Hostname = request.HostName,
             Result = SnapshotStatus.InProgress
         };
-        var addedSnapshot = _dbContext.Snapshots.Add(snapshot);
-        _dbContext.SaveChanges();
+        var addedSnapshot = _snapshotRepo.Add(snapshot);
         return Task.FromResult(new SnapshotId {
-            SnapshotId_ = addedSnapshot.Entity.Id
+            SnapshotId_ = addedSnapshot.Id
         });
     }
 
     public override Task<ListOfSnapshots> GetSnapshots(GetSnapshotMessage request, ServerCallContext context) {
-        var snapshots = _dbContext.Snapshots.Where(x =>
-            x.Drive == request.TargetDrive
-            && x.Hostname == request.TargetHostName);
-
+        var snapshots = _snapshotRepo.GetByCondition(snapshot => snapshot.Drive == request.TargetDrive
+                                                                 && snapshot.Hostname == request.TargetHostName);
         var result = new ListOfSnapshots();
         var mappedSnapshots = _mapper.Map<List<Snapshot>, List<SnapshotMessage>>(snapshots.ToList());
         result.Snapshots.AddRange(mappedSnapshots);
@@ -43,28 +40,29 @@ public class SnapshotServiceImpl : SnapshotService.SnapshotServiceBase{
     }
 
     public override Task<Response> DeleteSnapshot(SnapshotId request, ServerCallContext context) {
-        var targetSnapshot = _dbContext.Snapshots.FirstOrDefault(x => x.Id == request.SnapshotId_);
+        var targetSnapshot = _snapshotRepo.Get(request.SnapshotId_);
         if (targetSnapshot == null) {
             return Task.FromResult(new Response {
                 Result = GrpcResult.NOT_FOUND.ToString()
-            });    
+            });
         }
-        _dbContext.Snapshots.Remove(targetSnapshot);
-        _dbContext.SaveChanges();
+
+        _snapshotRepo.Delete(targetSnapshot);
         return Task.FromResult(new Response {
             Result = GrpcResult.OK.ToString()
         });
     }
 
     public override Task<Response> FinishSnapshot(SnapshotResult request, ServerCallContext context) {
-        var targetSnapshot = _dbContext.Snapshots.FirstOrDefault(x => x.Id == request.SnapshotId);
+        var targetSnapshot = _snapshotRepo.Get(request.SnapshotId);
         if (targetSnapshot == null) {
             return Task.FromResult(new Response {
                 Result = GrpcResult.NOT_FOUND.ToString()
-            });    
+            });
         }
+
         targetSnapshot.Result = (SnapshotStatus)request.Result;
-        _dbContext.SaveChanges();
+        _snapshotRepo.Update(targetSnapshot);
         return Task.FromResult(new Response {
             Result = GrpcResult.OK.ToString()
         });
