@@ -1,8 +1,8 @@
 ﻿syntax = "proto3";
-import "FolderService.proto";
+import "Common.proto";
 
 service FileService {
-  rpc SaveFiles (ListOfFiles) returns (Response);
+  rpc SaveFiles (ListOfFiles) returns (SimpleResponse);
   rpc GetFiles (GetFilesForSnapshot) returns (ListOfFiles);
 }
 
@@ -13,7 +13,7 @@ message File {
   string ParentPath = 4;
   string Extension = 5;
   string SnapshotId = 6;
-  Status Status = 7;
+  ItemStatus Status = 7;
 }
 
 message ListOfFiles{

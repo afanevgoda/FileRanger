@@ -1,0 +1,16 @@
+﻿syntax = "proto3";
+
+message SimpleResponse {
+  GrpcSimpleResponse Result = 1;
+}
+
+enum ItemStatus {
+  Ok = 0;
+  Nok = 1;
+}
+
+enum GrpcSimpleResponse {
+  OK = 0;
+  FAILED = 1;
+  NOT_FOUND = 2;
+}

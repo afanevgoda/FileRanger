@@ -20,20 +20,20 @@ public class FolderServiceImpl : FolderService.FolderServiceBase{
         _mapper = mapper;
     }
 
-    public override Task<Response> SaveFolders(ListOfFolders request, ServerCallContext context) {
+    public override Task<SimpleResponse> SaveFolders(ListOfFolders request, ServerCallContext context) {
         var folders = _mapper.Map<List<Folder>, List<DAL.Models.Folder>>(request.Folder.ToList());
 
         var snapshotId = folders.FirstOrDefault()?.SnapshotId;
         if (!_snapshotRepo.DoesExistWithId(snapshotId))
-            return Task.FromResult(new Response() {
+            return Task.FromResult(new SimpleResponse() {
                 //todo: toString -> int
-                Result = GrpcResult.NOT_FOUND.ToString()
+                Result = GrpcSimpleResponse.NotFound
             });
 
         _folderRepo.AddRange(folders);
-        return Task.FromResult(new Response() {
+        return Task.FromResult(new SimpleResponse() {
             //todo: toString -> int
-            Result = GrpcResult.OK.ToString()
+            Result = GrpcSimpleResponse.Ok
         });
     }
 

@@ -1,12 +1,9 @@
 ﻿syntax = "proto3";
+import "Common.proto";
 //FolderService
 service FolderService {
-  rpc SaveFolders (ListOfFolders) returns (Response);
+  rpc SaveFolders (ListOfFolders) returns (SimpleResponse);
   rpc GetFolders (GetFolderForSnapshot) returns (ListOfFolders);
-}
-
-message Response {
-  string Result = 1;
 }
 
 message ListOfFolders {
@@ -20,7 +17,7 @@ message Folder {
   string FullPath = 3;
   string ParentPath = 4;
   int32 SnapshotId = 5;
-  Status Status = 7;
+  ItemStatus Status = 7;
 }
 
 message GetFolderForSnapshot {
@@ -29,7 +26,3 @@ message GetFolderForSnapshot {
 }
 
 
-enum Status {
-  Ok = 0;
-  Nok = 1;
-}

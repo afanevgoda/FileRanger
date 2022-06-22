@@ -32,7 +32,7 @@ public class ScannerController : Controller{
     }
 
     [HttpPost]
-    public async Task<string> AddFilesData([FromBody] List<FileDto> newFiles) {
+    public async Task<GrpcSimpleResponse> AddFilesData([FromBody] List<FileDto> newFiles) {
         var filesGrps = _mapper.Map<List<FileDto>, List<FileGrpc>>(newFiles);
         var client = new FileService.FileServiceClient(_channel);
 
@@ -44,7 +44,7 @@ public class ScannerController : Controller{
     }
 
     [HttpPost]
-    public async Task<string> AddFolderData([FromBody] List<FolderDto> newFolders) {
+    public async Task<GrpcSimpleResponse> AddFolderData([FromBody] List<FolderDto> newFolders) {
         var filesGrps = _mapper.Map<List<FolderDto>, List<FolderGrpc>>(newFolders);
         var client = new FolderService.FolderServiceClient(_channel);
 

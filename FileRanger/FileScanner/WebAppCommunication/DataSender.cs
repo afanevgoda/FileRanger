@@ -1,6 +1,7 @@
 ﻿using System.Net.Mime;
 using System.Text;
 using System.Text.Json;
+using Common.Enum;
 using Common.Snapshot;
 using Common.Snapshot.GRPC;
 using FileGrpcDto = Common.Snapshot.GRPC.File;
@@ -27,6 +28,9 @@ public class DataSender : IDataSender{
         var httpClient = _httpFactory.CreateClient();
         var httpResponseMessage = await httpClient
             .PostAsync($"{_configuration.GetSection("WebAppHost").Value}/Scanner/AddFolderData", message);
+                var responseContent = await httpResponseMessage.Content.ReadAsStringAsync();
+        if ((GrpcSimpleResponse)Int32.Parse(responseContent) == GrpcSimpleResponse.NOT_FOUND)
+            throw new Exception();
     }
 
     public async Task SendFilesData(IEnumerable<FileGrpcDto> newFiles) {
@@ -38,6 +42,9 @@ public class DataSender : IDataSender{
         var httpClient = _httpFactory.CreateClient();
         var httpResponseMessage = await httpClient
             .PostAsync($"{_configuration.GetSection("WebAppHost").Value}/Scanner/AddFilesData", message);
+        var responseContent = await httpResponseMessage.Content.ReadAsStringAsync();
+        if ((GrpcSimpleResponse)Int32.Parse(responseContent) == GrpcSimpleResponse.NOT_FOUND)
+            throw new Exception();
     }
 
     public async Task<int> SendNewSnapshot(AddNewSnapshot snapshot) {
@@ -52,7 +59,7 @@ public class DataSender : IDataSender{
         StreamReader readStream = new StreamReader(httpResponseMessage.Content.ReadAsStream(), Encoding.UTF8);
         return Int32.Parse(await readStream.ReadToEndAsync());
     }
-    
+
     public async Task SendSnapshotResult(int snapshotId, SnapshotStatus status) {
         var snapshotInfo = new FinishSnapshot {
             Status = status,

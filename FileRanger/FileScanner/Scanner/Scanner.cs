@@ -14,10 +14,13 @@ public class Scanner : IScanner{
     private int _snapshotId;
     private readonly IConfiguration _configuration;
 
-    private List<Folder> _foldersToAdd = new();
+    // private List<Folder> _foldersToAdd = new();
+    private ConcurrentBag<Folder> _foldersToAdd = new ConcurrentBag<Folder>();
     private List<File> _filesToAdd = new();
     private readonly int _filesLimitToSend;
     private readonly int _foldersLimitToSend;
+
+    private bool _cancellationBool;
 
     public Scanner(ILogger<Scanner> logger, IDataSender dataSender,
         ISnapshotInitializer snapshotInitializer, IConfiguration configuration) {
@@ -33,10 +36,13 @@ public class Scanner : IScanner{
         try {
             _snapshotId = await _snapshotInitializer.CreateSnapshot(targetDrive);
             await ScanDirectory($"{targetDrive}:\\");
-            AddFoldersIntoStorage(true);
+            await AddFoldersIntoStorage(true);
             AddFilesIntoStorage(true);
-            await _dataSender.SendSnapshotResult(_snapshotId, SnapshotStatus.Success);
+            await _dataSender.SendSnapshotResult(_snapshotId,
+                _cancellationBool ? SnapshotStatus.Fail : SnapshotStatus.Success);
             _logger.LogInformation($"Scanning disk {targetDrive} is finished");
+            if (_cancellationBool)
+                _logger.LogInformation($"Scan was cancelled");
         }
         catch (Exception ex) {
             _logger.LogError(ex, $"Couldn't scan disk {targetDrive}");
@@ -48,6 +54,9 @@ public class Scanner : IScanner{
         try {
             var directory = new DirectoryInfo(targetDirectory);
             foreach (var subDirectory in directory.GetDirectories()) {
+                if (_cancellationBool)
+                    break;
+
                 _foldersToAdd.Add(new Folder {
                     Name = subDirectory.Name,
                     FullPath = subDirectory.FullName,
@@ -56,7 +65,7 @@ public class Scanner : IScanner{
                     Status = ItemStatus.Ok
                 });
                 await ScanDirectory(subDirectory.FullName);
-                AddFoldersIntoStorage();
+                await AddFoldersIntoStorage();
             }
 
             ScanFiles(directory);
@@ -87,6 +96,9 @@ public class Scanner : IScanner{
 
     private void ScanFiles(DirectoryInfo targetDirectory) {
         foreach (var file in targetDirectory.GetFiles()) {
+            if (_cancellationBool)
+                break;
+
             _filesToAdd.Add(new File {
                 Name = file.Name,
                 FullPath = file.FullName,
@@ -101,19 +113,33 @@ public class Scanner : IScanner{
     private readonly object filesLock = new();
     private readonly object foldersLock = new();
 
-    private void AddFoldersIntoStorage(bool addAnyway = false) {
+    private async Task AddFoldersIntoStorage(bool addAnyway = false) {
         if (_foldersToAdd.Count >= _foldersLimitToSend || addAnyway) {
-            lock (foldersLock) {
-                _dataSender.SendFolderData(_foldersToAdd);
+            // lock (foldersLock) {
+            try {
+                var foldersTemp = new List<Folder>(_foldersToAdd);
                 _foldersToAdd.Clear();
+                await _dataSender.SendFolderData(foldersTemp);
             }
+            catch (Exception e) {
+                _logger.LogError(e, "Going to cancel scan");
+                _cancellationBool = true;
+            }
+            // }
         }
     }
 
-    private void AddFilesIntoStorage(bool addAnyway = false) {
+    private async Task AddFilesIntoStorage(bool addAnyway = false) {
         if (_filesToAdd.Count >= _filesLimitToSend || addAnyway) {
             lock (filesLock) {
-                _dataSender.SendFilesData(_filesToAdd);
+                try {
+                    _dataSender.SendFilesData(_filesToAdd);
+                }
+                catch (Exception e) {
+                    _logger.LogError(e, "Going to cancel scan");
+                    _cancellationBool = true;
+                }
+
                 _filesToAdd.Clear();
             }
         }

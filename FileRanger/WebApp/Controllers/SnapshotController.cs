@@ -9,6 +9,7 @@ using Grpc.Net.Client;
 using Microsoft.AspNetCore.Mvc;
 using FileDto = Common.Snapshot.GRPC.File;
 using FolderDto = Common.Snapshot.GRPC.Folder;
+using ItemStatus = Common.Enum.ItemStatus;
 
 
 namespace WebApp.Controllers;
@@ -35,7 +36,7 @@ public class SnapshotController : Controller{
     }
 
     [HttpPost]
-    public async Task<string> SendSnapshotResult([FromBody] FinishSnapshot snapshotStatus) {
+    public async Task<GrpcSimpleResponse> SendSnapshotResult([FromBody] FinishSnapshot snapshotStatus) {
         var client = new SnapshotService.SnapshotServiceClient(_channel);
         var message = new SnapshotResult {
             Result = (Result)snapshotStatus.Status,
@@ -72,7 +73,7 @@ public class SnapshotController : Controller{
             Id = x.Id,
             Name = x.Name,
             ParentPath = x.ParentPath,
-            Status = (ItemStatus)x.Status
+            Status = (Common.Enum.ItemStatus)x.Status
         }).ToList();
 
         return result;
@@ -92,21 +93,21 @@ public class SnapshotController : Controller{
             Id = x.Id,
             Name = x.Name,
             ParentPath = x.ParentPath,
-            Status = (ItemStatus)x.Status
+            Status = (Common.Enum.ItemStatus)x.Status
         }).ToList();
 
         return result;
     }
 
     [HttpDelete]
-    public async Task<string> DeleteSnapshot(int snapshotId) {
+    public async Task<GrpcSimpleResponse> DeleteSnapshot(int snapshotId) {
         var client = new SnapshotService.SnapshotServiceClient(_channel);
         
         var reply = await client.DeleteSnapshotAsync(new SnapshotId() {
             SnapshotId_ = snapshotId
         });
 
-        if (reply.Result == GrpcResult.NOT_FOUND.ToString())
+        if (reply.Result == GrpcSimpleResponse.NotFound)
             Response.StatusCode = 404;
         
         return reply.Result;

@@ -28,20 +28,20 @@ public class FileServiceImpl : FileService.FileServiceBase{
         return Task.FromResult(result);
     }
 
-    public override Task<Response> SaveFiles(ListOfFiles request, ServerCallContext context) {
+    public override Task<SimpleResponse> SaveFiles(ListOfFiles request, ServerCallContext context) {
         var snapshotId = Int32.Parse(request.Files.FirstOrDefault()?.SnapshotId);
         if (!_snapshotRepo.DoesExistWithId(snapshotId))
-            return Task.FromResult(new Response {
+            return Task.FromResult(new SimpleResponse {
                 //todo: toString -> int
-                Result = GrpcResult.NOT_FOUND.ToString()
+                Result = GrpcSimpleResponse.NotFound
             });
 
         var snapshot = _snapshotRepo.Get(snapshotId);
         var mappedFiles = _mapper.Map<List<File>, List<DAL.Models.File>>(request.Files.ToList());
         _fileRepo.AddRange(mappedFiles);
 
-        return Task.FromResult(new Response() {
-            Result = GrpcResult.OK.ToString()
+        return Task.FromResult(new SimpleResponse() {
+            Result = GrpcSimpleResponse.Ok
         });
     }
 }

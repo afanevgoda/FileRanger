@@ -1,11 +1,11 @@
 ﻿syntax = "proto3";
-import "FolderService.proto";
+import "Common.proto";
 
 service SnapshotService{
   rpc AddNewSnapshot (NewSnapshot) returns (SnapshotId);
   rpc GetSnapshots (GetSnapshotMessage) returns (ListOfSnapshots);
-  rpc DeleteSnapshot (SnapshotId) returns (Response);
-  rpc FinishSnapshot (SnapshotResult) returns (Response);
+  rpc DeleteSnapshot (SnapshotId) returns (SimpleResponse);
+  rpc FinishSnapshot (SnapshotResult) returns (SimpleResponse);
 }
 
 message NewSnapshot{

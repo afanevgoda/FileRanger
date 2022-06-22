@@ -39,32 +39,32 @@ public class SnapshotServiceImpl : SnapshotService.SnapshotServiceBase{
         return Task.FromResult(result);
     }
 
-    public override Task<Response> DeleteSnapshot(SnapshotId request, ServerCallContext context) {
+    public override Task<SimpleResponse> DeleteSnapshot(SnapshotId request, ServerCallContext context) {
         var targetSnapshot = _snapshotRepo.Get(request.SnapshotId_);
         if (targetSnapshot == null) {
-            return Task.FromResult(new Response {
-                Result = GrpcResult.NOT_FOUND.ToString()
+            return Task.FromResult(new SimpleResponse {
+                Result = GrpcSimpleResponse.NotFound
             });
         }
 
         _snapshotRepo.Delete(targetSnapshot);
-        return Task.FromResult(new Response {
-            Result = GrpcResult.OK.ToString()
+        return Task.FromResult(new SimpleResponse {
+            Result = GrpcSimpleResponse.Ok
         });
     }
 
-    public override Task<Response> FinishSnapshot(SnapshotResult request, ServerCallContext context) {
+    public override Task<SimpleResponse> FinishSnapshot(SnapshotResult request, ServerCallContext context) {
         var targetSnapshot = _snapshotRepo.Get(request.SnapshotId);
         if (targetSnapshot == null) {
-            return Task.FromResult(new Response {
-                Result = GrpcResult.NOT_FOUND.ToString()
+            return Task.FromResult(new SimpleResponse {
+                Result = GrpcSimpleResponse.NotFound
             });
         }
 
         targetSnapshot.Result = (SnapshotStatus)request.Result;
         _snapshotRepo.Update(targetSnapshot);
-        return Task.FromResult(new Response {
-            Result = GrpcResult.OK.ToString()
+        return Task.FromResult(new SimpleResponse {
+            Result = GrpcSimpleResponse.Ok
         });
     }
 }
