@@ -10,10 +10,10 @@ Implemented features so far:
 
 - [x] Create snapshot
 - [x] Get a list of snapshots
-- [ ] Scan your folder and files structure in realtime
+- [ ] Scan your folder and files structure in real-time
 - [ ] Data replication DB -> ES
 - [ ] Search
-- [ ] Everyting in Docker
+- [ ] Everything in Docker
 
 Architecture:
 
@@ -25,4 +25,4 @@ Architecture:
 
 Known bugs:
 
-* Deleting snapshot while it is in progress crashes the **SnapshotFileBrowser** service
+- [x] Deleting snapshot while it is in progress crashes the **SnapshotFileBrowser** service

@@ -36,7 +36,7 @@ export default function SnapshotBrowser() {
     const updateSnapshotList = () => {
         if (selectedDrive === null || selectedScanner === null)
             return;
-        const request = getSnapshots(selectedScanner, selectedDrive);
+        const request = getSnapshots(selectedScanner?.hostName, selectedDrive);
         request.then(x => {
             setSnapshots(x);
             // setTargetPath(selectedDrive);
@@ -78,7 +78,7 @@ export default function SnapshotBrowser() {
                 setSelectedDrive={setSelectedDrive}
                 selectedDrive={selectedDrive}
                 setTargetPath={setTargetPath} />
-            <SnapshotStarter selectedDrive={selectedDrive} />
+            <SnapshotStarter selectedDrive={selectedDrive} selectedScanner={selectedScanner} />
             <SnapshotSelector
                 snapshots={snapshots}
                 setSelectedSnapshot={setSelectedSnapshot}

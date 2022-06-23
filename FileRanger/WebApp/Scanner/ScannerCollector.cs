@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Common.Enum;
 using Grpc.Net.Client;
 using RabbitMQ.Client;
 
@@ -35,13 +36,26 @@ public class ScannerCollector : IScannerCollector{
 
     public void AddScanner(ScannerInfo scannerInfo) {
         var sameScanner = Scanners.FirstOrDefault(x => x.HostName == scannerInfo.HostName);
-        var isAlreadyAdded = sameScanner != null;
-
-        if (isAlreadyAdded)
-            return;
-        
-        Scanners.Add(scannerInfo);
+        if (sameScanner != null) {
+            sameScanner.Status = ScannerStatus.Connected;
+            scannerInfo.LastPongTime = DateTime.Now;            
+        }
+        else {
+            scannerInfo.Status = ScannerStatus.Connected;
+            scannerInfo.LastPongTime = DateTime.Now;
+            Scanners.Add(scannerInfo);
+        }
     }
 
     public List<ScannerInfo> GetScanners() => Scanners;
+    public void UpdateScannersStatus() {
+        Scanners.ForEach(x => {
+            if ((DateTime.Now - x.LastPongTime).TotalSeconds > 120)
+                x.Status = ScannerStatus.Disconnected;
+            else if ((DateTime.Now - x.LastPongTime).TotalSeconds > 60)
+                x.Status = ScannerStatus.WaitingToConnect;
+            else 
+                x.Status = ScannerStatus.Connected;
+        });
+    }
 }

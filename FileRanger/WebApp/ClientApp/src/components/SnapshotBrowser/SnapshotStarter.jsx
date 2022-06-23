@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Button, Divider } from "antd";
 import { startScan } from "../../services/ScannerService";
 
-export default function SnapshotStarter({ selectedDrive }) {
+export default function SnapshotStarter({ selectedDrive, selectedScanner }) {
 
     const defaultText = "Create new snapshot";
     const startingText = "Starting...";
@@ -32,6 +32,6 @@ export default function SnapshotStarter({ selectedDrive }) {
 
     return (<>
         <Divider type="vertical"></Divider>
-        <Button loading={loading} onClick={onClick} disabled={selectedDrive == null}>{buttonText}</Button>
+        <Button loading={loading} onClick={onClick} disabled={selectedDrive == null || selectedScanner.status !== 0}>{buttonText}</Button>
     </>);
 }

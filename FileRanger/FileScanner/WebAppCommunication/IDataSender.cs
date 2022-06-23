@@ -6,7 +6,7 @@ namespace FileScanner.WebAppCommunication;
 
 public interface IDataSender{
     Task SendFolderData(IEnumerable<Folder> newFolders);
-    
+
     Task SendFilesData(IEnumerable<File> newFolders);
 
     Task<int> SendNewSnapshot(AddNewSnapshot snapshot);

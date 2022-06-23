@@ -14,6 +14,7 @@ public class ScannerPinger : BackgroundService{
     protected override async Task ExecuteAsync(CancellationToken stoppingToken) {
         while (!stoppingToken.IsCancellationRequested) {
             _collector.CalloutScanners();
+            _collector.UpdateScannersStatus();
             await Task.Delay(15000, stoppingToken);
         }
     }
