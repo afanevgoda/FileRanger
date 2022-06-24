@@ -26,3 +26,4 @@ Architecture:
 Known bugs:
 
 - [x] Deleting snapshot while it is in progress crashes the **SnapshotFileBrowser** service
+- [ ] Race condition in Snapshot browser with files

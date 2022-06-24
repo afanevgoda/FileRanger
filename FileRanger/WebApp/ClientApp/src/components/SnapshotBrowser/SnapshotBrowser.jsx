@@ -46,7 +46,8 @@ export default function SnapshotBrowser() {
     useEffect(() => {
         if (targetPath === undefined || selectedSnapshot === undefined)
             return;
-
+        setFiles([]);
+        setFolders([]);
         const folderRequest = getFolders(targetPath, selectedSnapshot.id);
         folderRequest.then(x => {
             setFolders(x);

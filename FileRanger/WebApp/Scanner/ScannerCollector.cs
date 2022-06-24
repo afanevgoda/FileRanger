@@ -1,19 +1,16 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Text;
 using Common.Enum;
-using Grpc.Net.Client;
 using RabbitMQ.Client;
 
 namespace WebApp.Scanner;
 
 public class ScannerCollector : IScannerCollector{
-    private readonly GrpcChannel _channel;
+    private readonly Settings _settings;
     private readonly ConnectionFactory _conFactory;
-    private List<ScannerInfo> Scanners = new ();
+    private readonly List<ScannerInfo> _scanners = new();
 
-    public ScannerCollector(GrpcChannel channel, ConnectionFactory conFactory) {
-        _channel = channel;
+    public ScannerCollector(Settings settings, ConnectionFactory conFactory) {
+        _settings = settings;
         _conFactory = conFactory;
     }
 
@@ -25,7 +22,7 @@ public class ScannerCollector : IScannerCollector{
             exclusive: false,
             autoDelete: false,
             arguments: null);
-        
+
         var body = Encoding.UTF8.GetBytes("");
 
         channel.BasicPublish(exchange: "",
@@ -34,27 +31,34 @@ public class ScannerCollector : IScannerCollector{
             body: body);
     }
 
+    private object _addScannerLock = new();
+
     public void AddScanner(ScannerInfo scannerInfo) {
-        var sameScanner = Scanners.FirstOrDefault(x => x.HostName == scannerInfo.HostName);
-        if (sameScanner != null) {
-            sameScanner.Status = ScannerStatus.Connected;
-            scannerInfo.LastPongTime = DateTime.Now;            
-        }
-        else {
-            scannerInfo.Status = ScannerStatus.Connected;
-            scannerInfo.LastPongTime = DateTime.Now;
-            Scanners.Add(scannerInfo);
+        lock (_addScannerLock) {
+            var sameScanner = _scanners.FirstOrDefault(x => x.HostName == scannerInfo.HostName);
+            var index = _scanners.IndexOf(sameScanner);
+            if (sameScanner != null && index >= 0) {
+                _scanners[index].Status = ScannerStatus.Connected;
+                _scanners[index].LastPongTime = DateTime.Now;
+            }
+            else {
+                scannerInfo.Status = ScannerStatus.Connected;
+                scannerInfo.LastPongTime = DateTime.Now;
+                _scanners.Add(scannerInfo);
+            }
         }
     }
 
-    public List<ScannerInfo> GetScanners() => Scanners;
+    public List<ScannerInfo> GetScanners() => _scanners;
+
     public void UpdateScannersStatus() {
-        Scanners.ForEach(x => {
-            if ((DateTime.Now - x.LastPongTime).TotalSeconds > 120)
+        _scanners.ForEach(x => {
+            if ((DateTime.Now - x.LastPongTime).TotalSeconds > _settings.ScannerCalloutIntervalInSeconds * 8)
                 x.Status = ScannerStatus.Disconnected;
-            else if ((DateTime.Now - x.LastPongTime).TotalSeconds > 60)
+            else if ((DateTime.Now - x.LastPongTime).TotalSeconds >
+                     _settings.ScannerCalloutIntervalInSeconds * 4)
                 x.Status = ScannerStatus.WaitingToConnect;
-            else 
+            else
                 x.Status = ScannerStatus.Connected;
         });
     }

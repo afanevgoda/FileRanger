@@ -16,7 +16,7 @@ public class Scanner : IScanner{
 
     // private List<Folder> _foldersToAdd = new();
     private ConcurrentBag<Folder> _foldersToAdd = new ConcurrentBag<Folder>();
-    private List<File> _filesToAdd = new();
+    private ConcurrentBag<File> _filesToAdd = new();
     private readonly int _filesLimitToSend;
     private readonly int _foldersLimitToSend;
 
@@ -110,12 +110,8 @@ public class Scanner : IScanner{
         }
     }
 
-    private readonly object filesLock = new();
-    private readonly object foldersLock = new();
-
     private async Task AddFoldersIntoStorage(bool addAnyway = false) {
         if (_foldersToAdd.Count >= _foldersLimitToSend || addAnyway) {
-            // lock (foldersLock) {
             try {
                 var foldersTemp = new List<Folder>(_foldersToAdd);
                 _foldersToAdd.Clear();
@@ -125,22 +121,19 @@ public class Scanner : IScanner{
                 _logger.LogError(e, "Going to cancel scan");
                 _cancellationBool = true;
             }
-            // }
         }
     }
 
     private async Task AddFilesIntoStorage(bool addAnyway = false) {
         if (_filesToAdd.Count >= _filesLimitToSend || addAnyway) {
-            lock (filesLock) {
-                try {
-                    _dataSender.SendFilesData(_filesToAdd);
-                }
-                catch (Exception e) {
-                    _logger.LogError(e, "Going to cancel scan");
-                    _cancellationBool = true;
-                }
-
+            try {
+                var filesTemp = new List<File>(_filesToAdd);
                 _filesToAdd.Clear();
+                await _dataSender.SendFilesData(filesTemp);
+            }
+            catch (Exception e) {
+                _logger.LogError(e, "Going to cancel scan");
+                _cancellationBool = true;
             }
         }
     }

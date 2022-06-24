@@ -6,16 +6,18 @@ namespace WebApp.Scanner;
 
 public class ScannerPinger : BackgroundService{
     private readonly IScannerCollector _collector;
+    private readonly Settings _settings;
 
-    public ScannerPinger(IScannerCollector collector) {
+    public ScannerPinger(IScannerCollector collector, Settings settings) {
         _collector = collector;
+        _settings = settings;
     }
     
     protected override async Task ExecuteAsync(CancellationToken stoppingToken) {
         while (!stoppingToken.IsCancellationRequested) {
             _collector.CalloutScanners();
             _collector.UpdateScannersStatus();
-            await Task.Delay(15000, stoppingToken);
+            await Task.Delay(_settings.ScannerCalloutIntervalInSeconds * 1000, stoppingToken);
         }
     }
 }
