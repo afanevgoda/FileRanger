@@ -1,6 +1,7 @@
 using Grpc.Net.Client;
 using RabbitMQ.Client;
 using WebApp;
+using WebApp.Replicator;
 using WebApp.Scanner;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +16,7 @@ builder.Services.AddScoped(_ => new ConnectionFactory
     { HostName = settings.RmqHost });
 // builder.Services.AddCors();
 builder.Services.AddSingleton<IScannerCollector, ScannerCollector>();
+builder.Services.AddSingleton<IReplicator, Replicator>();
 builder.Services.AddHostedService<ScannerPinger>();
 builder.Services.AddLogging();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

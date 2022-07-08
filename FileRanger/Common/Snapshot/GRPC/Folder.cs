@@ -9,4 +9,5 @@ public class Folder{
     public string ParentPath { get; set; }
     public int SnapshotId { get; set; }
     public ItemStatus Status { get; set; }
+    public float Size { get; set; }
 }

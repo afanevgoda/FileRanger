@@ -10,4 +10,6 @@ public class File{
     public string Extension {get;set;}
     public int SnapshotId {get;set;}
     public ItemStatus Status { get; set; }
+    
+    public float Size { get; set; }
 }

@@ -6,6 +6,7 @@ using Grpc.Net.Client;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
+using WebApp.Replicator;
 using WebApp.Scanner;
 using FileDto = Common.Snapshot.GRPC.File;
 using FolderDto = Common.Snapshot.GRPC.Folder;
@@ -20,15 +21,18 @@ public class ScannerController : Controller{
     private readonly ConnectionFactory _conFactory;
     private readonly IScannerCollector _scannerCollector;
     private readonly IMapper _mapper;
+    
+    // todo: test purpose only
+    private readonly IReplicator _replicator;
 
     public ScannerController(ILogger<ScannerController> logger, IMapper mapper, GrpcChannel channel,
-        ConnectionFactory conFactory,
-        IScannerCollector scannerCollector) {
+        ConnectionFactory conFactory, IScannerCollector scannerCollector, IReplicator replicator) {
         _logger = logger;
         _channel = channel;
         _conFactory = conFactory;
         _scannerCollector = scannerCollector;
         _mapper = mapper;
+        _replicator = replicator;
     }
 
     [HttpPost]
@@ -77,6 +81,7 @@ public class ScannerController : Controller{
 
     [HttpPost]
     public void Callout([FromBody] ScannerInfo scannerInfo) {
+        _replicator.AskForReplication();
         _scannerCollector.AddScanner(scannerInfo);
     }
 

@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Helpers", "Helpers\Helpers.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Protos", "Protos\Protos.csproj", "{AA9B56B4-AADD-4FEC-84AA-8E4DFD562427}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataReplicator", "DataReplicator\DataReplicator.csproj", "{3C5A54A3-E72A-4645-B778-CDB234263EC3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,10 @@ Global
 		{AA9B56B4-AADD-4FEC-84AA-8E4DFD562427}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AA9B56B4-AADD-4FEC-84AA-8E4DFD562427}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AA9B56B4-AADD-4FEC-84AA-8E4DFD562427}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C5A54A3-E72A-4645-B778-CDB234263EC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C5A54A3-E72A-4645-B778-CDB234263EC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C5A54A3-E72A-4645-B778-CDB234263EC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C5A54A3-E72A-4645-B778-CDB234263EC3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,18 +1,23 @@
 import React, { useState } from "react";
 import { Divider, Tooltip, Button, Space, Row, Col, Modal } from 'antd';
-import { CloseOutlined, DeleteOutlined } from '@ant-design/icons';
+import { CloseOutlined, DeleteOutlined, LoadingOutlined } from '@ant-design/icons';
 import { defaultFormat } from '../../helpers/dateHelper';
 import '../../components/SnapshotBrowser/SnapshotSelector.module.css';
 import { deleteSnapshot } from "../../services/SnapshotService";
 
-export default function SnapshotSelector({ snapshots, setSelectedSnapshot, selectedSnapshotId }) {
+export default function SnapshotSelector({ snapshots, setSelectedSnapshot, selectedSnapshotId, dyingSnapshots, setDyingSnapshots }) {
     const onClick = (snapshot) => setSelectedSnapshot(snapshot);
 
+    if (dyingSnapshots === undefined) {
+        dyingSnapshots = [];
+    }
     const modal = ({ id, createdAt, drive, hostname }) => {
-        console.log(id);
         Modal.confirm({
             title: `Do you want to delete snapshot ${defaultFormat(createdAt)} for ${hostname} - ${drive}`,
-            onOk: () => deleteSnapshot(id),
+            onOk: () => {
+                setDyingSnapshots([...dyingSnapshots, id])
+                deleteSnapshot(id);
+            },
             content: "All data for this snapshot will be removed",
             okText: "Delete",
             cancelText: "Cancel",
@@ -22,7 +27,6 @@ export default function SnapshotSelector({ snapshots, setSelectedSnapshot, selec
             }
         });
     };
-
     let comp;
     if (snapshots.length == 0) {
         comp = <span>No snapshots found</span>
@@ -34,6 +38,7 @@ export default function SnapshotSelector({ snapshots, setSelectedSnapshot, selec
                     if (x.result === 0) tooltipText = "Scanning in progress. Snapshot can be incomplete"
                     else if (x.result === 1) tooltipText = "Scanning failed. The snapshot can be incomplete or broken"
                     else if (x.result === 2) tooltipText = "Everything is ok"
+                    else if (dyingSnapshots.indexOf(x.id) >= 0) tooltipText = "The snapshot will be deleted soon"
 
                     return (
                         <Col className="gutter-row" span={4}>
@@ -41,14 +46,17 @@ export default function SnapshotSelector({ snapshots, setSelectedSnapshot, selec
                                 <Button
                                     type={x.result === 0 ? "dashed" : "primary"}
                                     onClick={() => onClick(x)}
-                                    disabled={selectedSnapshotId === x.id}
+                                    disabled={selectedSnapshotId === x.id || dyingSnapshots.indexOf(x.id) >= 0}
                                     danger={x.result === 1}
                                 >
                                     {defaultFormat(x.createdAt)}
                                 </Button>
                             </Tooltip>
                             <Tooltip title="Delete this snapshot" mouseEnterDelay={0.5}>
-                                <Button icon={<CloseOutlined />} onClick={() => modal(x)} />
+                                <Button
+                                    disabled={dyingSnapshots.indexOf(x.id) >= 0}
+                                    icon={dyingSnapshots.indexOf(x.id) >= 0 ? <LoadingOutlined /> : <CloseOutlined />}
+                                    onClick={() => modal(x)} />
                             </Tooltip>
                         </Col>
                     );

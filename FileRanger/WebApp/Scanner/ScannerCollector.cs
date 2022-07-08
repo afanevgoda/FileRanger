@@ -36,8 +36,8 @@ public class ScannerCollector : IScannerCollector{
     public void AddScanner(ScannerInfo scannerInfo) {
         lock (_addScannerLock) {
             var sameScanner = _scanners.FirstOrDefault(x => x.HostName == scannerInfo.HostName);
-            var index = _scanners.IndexOf(sameScanner);
-            if (sameScanner != null && index >= 0) {
+            if (sameScanner != null) {
+                var index = _scanners.IndexOf(sameScanner);
                 _scanners[index].Status = ScannerStatus.Connected;
                 _scanners[index].LastPongTime = DateTime.Now;
             }

@@ -7,6 +7,7 @@ using Common.Snapshot.GRPC;
 using Common.Snapshot.Http;
 using Grpc.Net.Client;
 using Microsoft.AspNetCore.Mvc;
+using WebApp.Replicator;
 using FileDto = Common.Snapshot.GRPC.File;
 using FolderDto = Common.Snapshot.GRPC.Folder;
 using ItemStatus = Common.Enum.ItemStatus;
@@ -17,10 +18,12 @@ namespace WebApp.Controllers;
 public class SnapshotController : Controller{
     private readonly GrpcChannel _channel;
     private readonly IMapper _mapper;
+    private readonly IReplicator _replicator;
 
-    public SnapshotController(GrpcChannel channel, IMapper mapper) {
+    public SnapshotController(GrpcChannel channel, IMapper mapper, IReplicator replicator) {
         _channel = channel;
         _mapper = mapper;
+        _replicator = replicator;
     }
 
     [HttpPut]
@@ -42,7 +45,7 @@ public class SnapshotController : Controller{
             Result = (Result)snapshotStatus.Status,
             SnapshotId = snapshotStatus.SnapshotId
         };
-
+        _replicator.AskForReplication();
         var reply = await client.FinishSnapshotAsync(message);
         return reply.Result;
     }
@@ -73,7 +76,8 @@ public class SnapshotController : Controller{
             Id = x.Id,
             Name = x.Name,
             ParentPath = x.ParentPath,
-            Status = (Common.Enum.ItemStatus)x.Status
+            Status = (Common.Enum.ItemStatus)x.Status,
+            Size = x.Size
         }).ToList();
 
         return result;
@@ -93,7 +97,8 @@ public class SnapshotController : Controller{
             Id = x.Id,
             Name = x.Name,
             ParentPath = x.ParentPath,
-            Status = (Common.Enum.ItemStatus)x.Status
+            Status = (Common.Enum.ItemStatus)x.Status,
+            Size = x.Size
         }).ToList();
 
         return result;

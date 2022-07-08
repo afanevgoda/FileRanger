@@ -15,7 +15,7 @@ public class Scanner : IScanner{
     private readonly IConfiguration _configuration;
 
     // private List<Folder> _foldersToAdd = new();
-    private ConcurrentBag<Folder> _foldersToAdd = new ConcurrentBag<Folder>();
+    private ConcurrentBag<Folder> _foldersToAdd = new();
     private ConcurrentBag<File> _filesToAdd = new();
     private readonly int _filesLimitToSend;
     private readonly int _foldersLimitToSend;
@@ -37,7 +37,7 @@ public class Scanner : IScanner{
             _snapshotId = await _snapshotInitializer.CreateSnapshot(targetDrive);
             await ScanDirectory($"{targetDrive}:\\");
             await AddFoldersIntoStorage(true);
-            AddFilesIntoStorage(true);
+            await AddFilesIntoStorage(true);
             await _dataSender.SendSnapshotResult(_snapshotId,
                 _cancellationBool ? SnapshotStatus.Fail : SnapshotStatus.Success);
             _logger.LogInformation($"Scanning disk {targetDrive} is finished");
@@ -50,27 +50,40 @@ public class Scanner : IScanner{
         }
     }
 
-    private async Task ScanDirectory(string targetDirectory) {
+    private async Task<float> ScanDirectory(string targetDirectory) {
+        var totalFilesSize = 0f;
         try {
             var directory = new DirectoryInfo(targetDirectory);
             foreach (var subDirectory in directory.GetDirectories()) {
                 if (_cancellationBool)
                     break;
-
-                _foldersToAdd.Add(new Folder {
-                    Name = subDirectory.Name,
-                    FullPath = subDirectory.FullName,
-                    ParentPath = targetDirectory,
-                    SnapshotId = _snapshotId,
-                    Status = ItemStatus.Ok
-                });
-                await ScanDirectory(subDirectory.FullName);
-                await AddFoldersIntoStorage();
+                try {
+                    var filesSize = await ScanFiles(subDirectory);
+                    var filesSizeInSubdirectories = await ScanDirectory(subDirectory.FullName);
+                    totalFilesSize += filesSize + filesSizeInSubdirectories;
+                    _foldersToAdd.Add(new Folder {
+                        Name = subDirectory.Name,
+                        FullPath = subDirectory.FullName,
+                        ParentPath = targetDirectory,
+                        SnapshotId = _snapshotId,
+                        Status = ItemStatus.Ok,
+                        Size = filesSize
+                    });
+                    await AddFoldersIntoStorage();
+                }
+                catch (UnauthorizedAccessException ex) {
+                    _foldersToAdd.Add(new Folder {
+                        Name = subDirectory.Name,
+                        FullPath = subDirectory.FullName,
+                        ParentPath = targetDirectory,
+                        SnapshotId = _snapshotId,
+                        Status = ItemStatus.Failed
+                    });
+                    _logger.LogError($"Could not access {targetDirectory}");
+                }
             }
-
-            ScanFiles(directory);
         }
-        catch (UnauthorizedAccessException) {
+        catch (UnauthorizedAccessException ex) {
             _foldersToAdd.Add(new Folder {
                 Name = targetDirectory,
                 FullPath = targetDirectory,
@@ -92,29 +105,41 @@ public class Scanner : IScanner{
         }
 
         _logger.LogInformation($"Scanned {_foldersToAdd.Count} folders");
+        return totalFilesSize;
     }
 
-    private void ScanFiles(DirectoryInfo targetDirectory) {
+    private async Task<float> ScanFiles(DirectoryInfo targetDirectory) {
+        var temp = new List<File>();
         foreach (var file in targetDirectory.GetFiles()) {
             if (_cancellationBool)
                 break;
-
-            _filesToAdd.Add(new File {
+            var fileToAdd = new File {
                 Name = file.Name,
                 FullPath = file.FullName,
                 Extension = file.Extension,
                 ParentPath = targetDirectory.FullName,
-                SnapshotId = _snapshotId
-            });
-            AddFilesIntoStorage();
+                SnapshotId = _snapshotId,
+                Size = file.Length / 1000f
+            };
+            _filesToAdd.Add(fileToAdd);
+            temp.Add(fileToAdd);
+            await AddFilesIntoStorage();
         }
+
+        return temp.Sum(x => x.Size);
     }
+
+    private object _foldersLock = new();
 
     private async Task AddFoldersIntoStorage(bool addAnyway = false) {
         if (_foldersToAdd.Count >= _foldersLimitToSend || addAnyway) {
             try {
-                var foldersTemp = new List<Folder>(_foldersToAdd);
-                _foldersToAdd.Clear();
+                List<Folder> foldersTemp;
+                lock (_foldersLock) {
+                    foldersTemp = new List<Folder>(_foldersToAdd);
+                    _foldersToAdd.Clear();
+                }
+
                 await _dataSender.SendFolderData(foldersTemp);
             }
             catch (Exception e) {
@@ -124,11 +149,17 @@ public class Scanner : IScanner{
         }
     }
 
+    private object _filesLock = new object();
+
     private async Task AddFilesIntoStorage(bool addAnyway = false) {
         if (_filesToAdd.Count >= _filesLimitToSend || addAnyway) {
             try {
-                var filesTemp = new List<File>(_filesToAdd);
-                _filesToAdd.Clear();
+                List<File> filesTemp;
+                lock (_filesLock) {
+                    filesTemp = new List<File>(_filesToAdd);
+                    _filesToAdd.Clear();
+                }
+
                 await _dataSender.SendFilesData(filesTemp);
             }
             catch (Exception e) {

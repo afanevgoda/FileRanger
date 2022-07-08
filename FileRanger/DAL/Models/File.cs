@@ -12,6 +12,7 @@ public class File : Model{
     [Column("extension")] public string Extension { get; set; }
     [Column("snapshotId")] public int SnapshotId { get; set; }
     [Column("status")] public ItemStatus Status { get; set; }
+    [Column("size")] public float Size { get; set; }
 
     public Snapshot Snapshot { get; set; }
 }

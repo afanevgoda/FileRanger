@@ -18,6 +18,7 @@ message Folder {
   string ParentPath = 4;
   int32 SnapshotId = 5;
   ItemStatus Status = 7;
+  float Size = 8;
 }
 
 message GetFolderForSnapshot {
